@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Dr. Svitov David</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- <meta name="google-site-verification" content="85Mxzcx_l2APGhs_75bkK0Gm73wy9u5c5Ygn4tDARks" /> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="./css/index.css">
+
+    <script src="https://kit.fontawesome.com/8c9171bec9.js" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/animations/scale.css" />
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/animations/scale.css" />
+    <link rel="icon" href="/assets/Portfolio Icon.jfif">
+
+</head>
+
+
+<body>
+    <!-- GRADIANT EFFECT ON TOP -->
+<!--    <h1 id="main-heading" class="gradiant-effect"></h1>-->
+    <!-- MAIN DIVIDER WHICH CONTAINS ALL THE OTHER CATEGORY-->
+    <div id="main-box" style=" width: 100%;">
+        <!-- ABOUT ME SECTION -->
+        <div class="d-flex justify-content-center container-xxl" id="about-me">
+            <div class="d-flex">
+              <!-- <div> -->
+                <div class="flex-shrink-1">
+                    <!-- IMAGE OF THE PERSON-->
+                    <img src="assets/dsvitov.jpg" height="10%"   class="img-fluid">
+                </div>
+                <div class="flex-grow-1 ms-5 name-heading">
+                    <!-- NAME OF THE PERSON -->
+                    <h1>Svitov David</h1>
+                    <!-- ABOUT HIM -->
+                    <p style="text-align: justify">
+                      Hello!
+                      <br>
+                      <br>
+                        I defended my Ph.D. in 2023 at the <a href="https://www.iae.nsk.su/en/"> Institute of Automation and Electrometry
+                        of the Siberian Branch of the Russian Academy of Sciences</a> on the topic <a href="https://www.iae.nsk.su/images/stories/4_Education/3_DisSovet/230530/2-%D0%A1%D0%92%D0%98%D0%A2%D0%9E%D0%92/dissertation_---%D0%A1%D0%92%D0%98%D0%A2%D0%9E%D0%92.pdf">
+                        "Performance optimization of convolutional neural networks in a face recognition system"</a>.
+                        The results of the work are implemented in the products of the partners of <a href="https://expasoft.ru/">Expasoft LLC</a>
+                        in which I worked during the Ph.D.
+                      <br><br>
+                        My current research interests are in the field of 3D CV. In particular avatars of people,
+                        since creating photorealistic animated 3D objects is much more difficult than creating just 3D objects.
+                      <br>
+                      <br>
+                        I am currently working in <a href="https://research.samsung.com/aicenter_moscow">Samsung AI Center Moscow</a>.
+                      <br>
+                      <br>
+                      You can get in touch with me using the following links:
+                    </p>
+                    <br>
+                <div class="row">
+     <div class="col-4 text-center"><a href="mailto:david.svitov@yandex.ru"><i class="fa-regular fa-envelope fa-2xl" data-tippy-content="E-Mail"></i></a></div>
+     <div class="col-4 text-center"><a href="https://www.linkedin.com/in/david-svitov/"><i class="fa-brands fa-linkedin fa-2xl" data-tippy-content="LinkedIn"></i></a></div>
+    <div class="col-4 text-center"><a href="https://github.com/david-svitov"><i class="fa-brands fa-github fa-2xl" data-tippy-content="GitHub"></i></a></div>
+</div>
+                </div>
+            </div>
+        </div>
+
+        <br>
+
+        <div class="container-xxl heading" style=" width: 1034px;">
+            <h1>PROJECTS</h1>
+        </div>
+        <br>
+        <!-- PROJECT THAT HE OWNS -->
+        <div class="container-xxl" style="width: 1034px;" id="projects">
+            <div class="row row-cols-1 g-4">
+
+              <div class="col">
+                <div class="card project-card mb-1">
+                  <div class="row g-0">
+                    <div class="col-5">
+                        <img src="assets/dinar_teaser.gif" class="img-fluid">
+                    </div>
+                    <div class="col-7">
+                      <div class="card-body">
+                        <h5 class="card-title">DINAR: Diffusion Inpainting of Neural Textures for One-Shot Human Avatars</h5>
+                            <p class="project-card-text"><small class="text-muted">ICCV 2023</small></p>
+                        <a href="https://samsunglabs.github.io/DINAR_project_page/" class="stretched-link hidden"></a>
+                        <p class="project-card-text">
+                            We present DINAR, an approach for creating realistic rigged fullbody avatars from single RGB images.
+                            <br><br>
+                            Similarly to previous works, our method uses neural textures combined with the SMPL-X body model to achieve
+                            photo-realistic quality of avatars while keeping them easy to animate and fast to infer. To restore the texture,
+                            we use a latent diffusion model and show how such model can be trained in the neural texture space. The use of the
+                            diffusion model allows us to realistically reconstruct large unseen regions such as the back of a person given the
+                            frontal view. The models in our pipeline are trained using 2D images and videos only.
+                            <br><br>
+                            In the experiments, our approach achieves state-of-the-art rendering quality and good generalization to new poses
+                            and viewpoints. In particular, the approach improves state-of-the-art on the SnapshotPeople public benchmark.
+                            <br>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div><br>
+
+              <div class="col">
+                <div class="card project-card mb-1">
+                  <div class="row g-0">
+                    <div class="col-5">
+                      <img src="assets/MarginDictillation_teaser.png" class="img-fluid">
+                    </div>
+                    <div class="col-7">
+                      <div class="card-body">
+                        <h5 class="card-title">MarginDistillation: distillation for margin-based softmax</h5>
+                        <p class="project-card-text"><small class="text-muted">Automation and Remote Control 2022</small></p>
+                        <a href="https://github.com/david-svitov/margindistillation" class="stretched-link hidden"></a>
+                        <p class="project-card-text">
+                          The usage of convolutional neural networks (CNNs) in conjunction with a margin-based softmax approach demonstrates a state-ofthe-art performance for the face recognition problem. Recently, lightweight
+                          neural network models trained with the margin-based softmax have been introduced for the face identification task for edge devices. In this paper,
+                          we propose a novel distillation method for lightweight neural network architectures that outperforms other known methods for the face recognition task on LFW, AgeDB-30 and Megaface datasets. The idea of the
+                          proposed method is to use class centers from the teacher network for the student network. Then the student network is trained to get the same
+                          angles between the class centers and the face embeddings, predicted by the teacher network.
+                          <br>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div><br>
+
+              <div class="col">
+                <div class="card project-card mb-1">
+                  <div class="row g-0">
+                    <div class="col-5">
+                      <img src="assets/AmphibianDetector_teaser.gif" class="img-fluid">
+                    </div>
+                    <div class="col-7">
+                      <div class="card-body">
+                        <h5 class="card-title">AmphibianDetector: adaptive computation for moving objects detection</h5>
+                        <p class="project-card-text"><small class="text-muted">Optoelectronics, Instrumentation and Data Processing 2021</small></p>
+                        <a href="https://github.com/david-svitov/AmphibianDetector" class="stretched-link hidden"></a>
+                        <p class="project-card-text">
+                          Convolutional neural networks (CNN) allow achieving the highest accuracy for the task of object detection in images. Major
+                          challenges in further development of object detectors are false-positive detections and high demand of processing power.
+                          In this paper, we propose an approach to object detection which makes it possible to reduce the number of false-positive detections
+                          by processing only moving objects and reduce the required processing power for algorithm inference. The proposed approach is a modification
+                          of CNN already trained for object detection task. This method can be used to improve the accuracy of an existing system by applying minor changes
+                          to the algorithm. The efficiency of the proposed approach was demonstrated on the open dataset "CDNet2014 pedestrian".
+                          <br>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div><br>
+
+              <div class="col">
+                <div class="card project-card mb-1">
+                  <div class="row g-0">
+                    <div class="col-5">
+                      <img src="assets/BaldGAN_teaser.jpg" class="img-fluid">
+                    </div>
+                    <div class="col-7">
+                      <div class="card-body">
+                        <h5 class="card-title">BaldGAN</h5>
+                        <p class="project-card-text"><small class="text-muted">https://github.com/david-svitov/baldgan</small></p>
+                        <a href="https://github.com/david-svitov/baldgan" class="stretched-link hidden"></a>
+                        <p class="project-card-text">
+                          An open source project for removing hair from the head shown in the photo. <br>
+                          The project contains a pre-trained neural network, code and training dataset.
+                          <br>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div><br>
+
+
+              <div class="col">
+                <div class="card project-card mb-1">
+                  <div class="row g-0">
+                    <div class="col-5">
+                      <img src="assets/anomaly_teaser.png" class="img-fluid">
+                    </div>
+                    <div class="col-7">
+                      <div class="card-body">
+                        <h5 class="card-title">Detection of suspicious objects on the basis of analysis of human X-ray images</h5>
+                        <p class="project-card-text"><small class="text-muted">Optoelectronics, Instrumentation and Data Processing 2017</small></p>
+                        <a href="https://link.springer.com/article/10.3103/s875669901702008x" class="stretched-link hidden"></a>
+                        <p class="project-card-text">
+                          A new approach is proposed for detection of suspicious objects in X-ray images for security assurance. The approach is
+                          based on using the statistical model of the image for detecting anomalies. The model is designed with the use of the
+                          “bag-of-words” with context definition of the word coordinates in the image during statistical pattern formation. It is
+                          experimentally demonstrated that this approach ensures adequate approximation of the result of detection of suspicious
+                          objects by humans.
+                          <br>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div><br>
+
+            </div><br>
+        </div>
+
+        <br>
+        <br>
+
+        <div class="container-xxl heading" style=" width: 1034px;">
+            <h1>EXPERIENCE</h1>
+        </div>
+        <br>
+        <div class="container-xxl" style="width: 1034px;">
+            <div class="row row-cols-1 g-4">
+                <div class="col">
+                    <div class="card experience-card mb-1">
+                        <div class="row g-0">
+                            <div class="col-5">
+                                <div class="col d-flex align-items-center justify-content-center text-center" style="align-items: center; height: 250px">
+                                    <a href="https://research.samsung.com/aicenter_moscow"><img src="assets/saic_logo.png" class="img-fluid" style="width: 40%"></a>
+                                </div>
+                            </div>
+                            <div class="col-7">
+                                <div class="card-body">
+                                    <h5 class="card-title">Research Engineer</h5>
+                                    <p class="card-text"><small class="text-muted">Samsung AI Canter (SAIC) Moscow
+                                        <br>Feb 2022 - Present</small></p>
+                                    <p class="card-text">I am a research engineer at Vision, Learning & Telepresence (VIOLET)
+                                        lab. I am doing research in the area of photorealistic human avatars, which has resulted
+                                        in a first-author ICCV paper. The article was done under the supervision of
+                                        <a href="https://scholar.google.com/citations?user=gYYVokYAAAAJ&hl=en">
+                                        Dr. Lempitsky</a>.</p>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card experience-card mb-1">
+                        <div class="row g-0">
+                            <div class="col-5">
+                                <div class="col d-flex align-items-center justify-content-center text-center" style="align-items: center; height: 320px">
+                                    <a href="https://expasoft.ru/"><img src="assets/exposoft_logo.png" class="img-fluid" style="width: 40%"></a>
+                                </div>
+                            </div>
+                            <div class="col-7">
+                                <div class="card-body">
+                                    <h5 class="card-title">Computer Vision Engineer</h5>
+                                    <p class="card-text"><small class="text-muted">Expasoft LLC
+                                        <br>Sep 2016 - Feb 2022</small></p>
+                                    <p class="card-text">I was involved in the development and acceleration of neural networks for biometric tasks.
+                                        Such as models for recognizing a person by voice or face. I have been developing new methods for distilling
+                                        facial recognition models and speeding up neural network detectors. As a result, I published several articles
+                                        and defended my Ph.D. <br><br>
+                                        I also collaborated with Huawei on the development of generative neural networks for mobile NPUs.
+                                    </p>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-xxl heading" style=" width: 1034px;">
+            <h1>EDUCATION</h1>
+        </div>
+        <br>
+        <div class="container-xxl" style="width: 1034px;">
+            <div class="row row-cols-1 g-4">
+                <div class="col">
+                    <div class="card experience-card mb-1">
+                        <div class="row g-0">
+                            <div class="col-5">
+                                <div class="col d-flex align-items-center justify-content-center text-center" style="align-items: center; height: 250px">
+                                    <a href="https://www.iae.nsk.su/en/"><img src="assets/iae_logo.png" class="img-fluid" style="width: 40%"></a>
+                                </div>
+                            </div>
+                            <div class="col-7">
+                                <div class="card-body">
+                                    <h5 class="card-title">Ph.D., Mathematical Modeling, Numerical Methods and Program Complexes</h5>
+                                    <p class="card-text"><small class="text-muted">Institute of Automation and Electrometry
+                                        of the Siberian Branch of the Russian Academy of Sciences<br>2019 - 2022</small></p>
+                                    <p class="card-text">Thesis: <a href="https://www.iae.nsk.su/images/stories/4_Education/3_DisSovet/230530/2-%D0%A1%D0%92%D0%98%D0%A2%D0%9E%D0%92/dissertation_---%D0%A1%D0%92%D0%98%D0%A2%D0%9E%D0%92.pdf">
+                                        "Performance optimization of convolutional neural networks in a face recognition system"</a>. <br>
+                                        Scientific adviser: <a href="https://www.iae.nsk.su/ru/34-news/2280-180504-yubiley-nezhevenko-es">Dr. Nezhevenko</a>.
+                                        Co-adviser: <a href="https://scholar.google.com/citations?user=_M8dw8gAAAAJ">Dr. Alyamkin</a>.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card experience-card mb-1">
+                      <div class="row g-0">
+                        <div class="col-5">
+                            <div class="col d-flex align-items-center justify-content-center text-center" style="align-items: center; height: 220px">
+                                <a href="https://english.nsu.ru/"><img src="assets/nsu_logo.png" class="img-fluid" style="width: 50%"></a>
+                            </div>
+                        </div>
+                        <div class="col-7">
+                          <div class="card-body">
+                            <h5 class="card-title">B.Sc., M.Sc., Informatics and computer engineering</h5>
+                              <p class="card-text"><small class="text-muted">Novosibirsk State University (NSU)<br>2012 - 2018</small></p>
+                              <p class="card-text">Bachelor's thesis: “Detection of suspicious objects on the basis of analysis of human
+                                  X-ray images”. Scientific adviser: <a href="https://scholar.google.com/citations?user=9WmuhUcAAAAJ">Dr. Kulikov</a></p>
+                              <p class="card-text">Master's thesis: “Applying deep learning techniques to detect local anomalies in
+                                  X-ray images”. Scientific adviser: <a href="https://scholar.google.com/citations?user=9WmuhUcAAAAJ">Dr. Kulikov</a></p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card experience-card mb-1">
+                      <div class="row g-0">
+                        <div class="col-5">
+                            <div class="col d-flex align-items-center justify-content-center text-center" style="align-items: center; height: 200px">
+                                <a href="https://ci.nsu.ru/"><img src="assets/hci_logo.png" class="img-fluid" style="width: 100%"></a>
+                            </div>
+                        </div>
+                        <div class="col-7">
+                          <div class="card-body">
+                            <h5 class="card-title">School</h5>
+                              <p class="card-text"><small class="text-muted">Higher College of Informatics<br>2010 - 2012</small></p>
+                            <p class="card-text">In high school, I studied at a specialized school with in-depth study of programming.</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <h1 class="gradiant-effect" id="connect"> GET IN TOUCH </h1>
+        <br>
+        <br>
+        <div class="row">
+    <div class="col-3"></div>
+     <div class="col-2 text-center"><a href="mailto:david.svitov@yandex.ru"><i class="fa-regular fa-envelope fa-2xl" data-tippy-content="E-Mail"></i></a></div>
+     <div class="col-2 text-center"><a href="https://www.linkedin.com/in/david-svitov/"><i class="fa-brands fa-linkedin fa-2xl" data-tippy-content="LinkedIn"></i></a></div>
+    <div class="col-2 text-center"><a href="https://github.com/david-svitov"><i class="fa-brands fa-github fa-2xl" data-tippy-content="GitHub"></i></a></div>
+    <div class="col-3"></div>
+
+<!--
+</div>
+        <br><br>
+        <br><br>
+
+        <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.min.js"></script>
+        <script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.js"></script>
+
+        <script src="https://apps.elfsight.com/p/platform.js" defer></script>
+        <div class="elfsight-app-4fd6d63f-c493-4a30-8558-af66a359e9ef" align="center"></div>
+
+        <script>
+            tippy('[data-tippy-content]', {
+                arrow: false,
+                inertia: true,
+                animation: 'scale',
+                theme: 'gradiant',
+                placement: 'bottom',
+            });
+        </script>
+
+    </div>
+-->
+
+</body>
+
+</html>
