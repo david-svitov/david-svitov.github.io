@@ -44,32 +44,6 @@
 </head>
 <body>
 
-<script type="text/javascript">
-var show_content = true;
-
-// Check for Korean language
-var lang_list = navigator.languages;
-for (var i in lang_list) {
-  var lang = lang_list[i];
-  var flag = lang.startsWith("ko");
-  if (flag == true) {
-    show_content = false;
-  }
-}
-
-// Check for Moscow timezone
-var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-tz = tz.toLowerCase();
-var flag = tz.includes("moscow");
-if (flag == true) {
-  show_content = false;
-}
-
-if (show_content == false) {
-  window.location.replace("https://samsunglabs.github.io/DINAR_project_page/");
-}
-</script>
-
 <section class="hero">
   <div class="hero-body">
     <div class="container is-max-desktop">
