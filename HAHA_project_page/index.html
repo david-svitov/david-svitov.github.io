@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="HAHA: Highly Articulated Gaussian Human Avatars with Textured Mesh Prior">
+  <meta name="keywords" content="human, full-body, Gaussian splatting, textures, avatar">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HAHA: Highly Articulated Gaussian Human Avatars with Textured Mesh Prior</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/ns.html?id=GTM-W4QX9C9"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+
+  <link rel="stylesheet" href="https://unpkg.com/image-compare-viewer/dist/image-compare-viewer.min.css">
+  <link rel="stylesheet" href="./static/css/twentytwenty.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+<script type="text/javascript">
+var show_content = true;
+
+// Check for Korean language
+var lang_list = navigator.languages;
+for (var i in lang_list) {
+  var lang = lang_list[i];
+  var flag = lang.startsWith("ko");
+  if (flag == true) {
+    show_content = false;
+  }
+}
+
+// Check for Moscow timezone
+var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+tz = tz.toLowerCase();
+var flag = tz.includes("moscow");
+if (flag == true) {
+  show_content = false;
+}
+
+if (show_content == false) {
+  window.location.replace("https://samsunglabs.github.io/DINAR_project_page/");
+}
+</script>
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">HAHA: Highly Articulated Gaussian Human Avatars with Textured Mesh Prior</h1>
+          <div class="is-size-4 publication-authors">
+            <span class="author-block">
+              <div class="author-portrait">
+                <img class="img-fluid mb-3" src="static/images/authors/david.png" alt="" >
+              </div>
+              <a href="https://scholar.google.com/citations?user=GlkbBIgAAAAJ">David Svitov</a><sup>1,2</sup>
+            </span>
+            <span class="author-block">
+              <div class="author-portrait">
+                <img class="img-fluid mb-3" src="static/images/authors/pietro.png" alt="" >
+              </div>
+              <a href="https://scholar.google.it/citations?user=lPV9rbkAAAAJ">Pietro Morerio</a><sup>2</sup>
+            </span>
+            <span class="author-block">
+              <div class="author-portrait">
+                <img class="img-fluid mb-3" src="static/images/authors/lourdes.jpeg" alt="" >
+              </div>
+              <a href="https://scholar.google.com/citations?user=IRMX4-4AAAAJ">Lourdes Agapito</a><sup>3</sup>
+            </span>
+            <span class="author-block">
+              <div class="author-portrait">
+                <img class="img-fluid mb-3" src="static/images/authors/alessio.jpeg" alt="" >
+              </div>
+              <a href="https://scholar.google.com/citations?user=LUzvbGIAAAAJ">Alessio Del Bue</a><sup>2</sup>
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>Università degli Studi di Genova, Italy</span><br>
+            <span class="author-block"><sup>2</sup>Istituto Italiano di Tecnologia (IIT) Genoa, Italy</span><br>
+            <span class="author-block"><sup>3</sup>Department of Computer Science, University College London</span><br>
+          </div>
+
+          <!--
+          <div class="is-size-4 publication-authors">
+            <span class="author-block">Conference name</span>
+          </div>
+          -->
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="TODO"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="TODO"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Video Link. -->
+              <span class="link-block">
+                <a href="https://youtu.be/vBzdAOKi1w0"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span>
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/david-svitov/HAHA/"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code (Soon)</span>
+                  </a>
+              </span>
+
+              <!-- Dataset Link.
+              <span class="link-block">
+                <a href="https://github.com/google/nerfies/releases/tag/0.1"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>Data</span>
+                  </a>
+              -->
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <img src="./static/images/teaser.png" alt=""/> </br></br>
+        <div class="content has-text-justified">
+
+          <p>
+            We present <span class="dnerf">HAHA</span> - a novel approach for animatable human avatar generation from monocular input videos.
+          </p>
+          <p>
+            The proposed method relies on learning the trade-off between the use of Gaussian splatting and a textured mesh for efficient and
+            high fidelity rendering. We demonstrate its efficiency to animate and render full-body human avatars controlled via the SMPL-X
+            parametric model. Our model learns to apply Gaussian splatting only in areas of the SMPL-X mesh where it is  necessary, like hair
+            and out-of-mesh clothing. This results in a minimal number of Gaussians being used to represent the full avatar, and reduced rendering
+            artifacts. This allows us to handle the animation of small body parts such as fingers that are traditionally disregarded.
+          </p>
+          <p>
+            We demonstrate the effectiveness of our approach on two open datasets: SnapshotPeople and X-Humans. Our method demonstrates on par
+            reconstruction quality to the state-of-the-art on SnapshotPeople, while using less than a third of Gaussians. HAHA outperforms previous
+            state-of-the-art on novel poses from X-Humans both quantitatively and qualitatively.
+          </p>
+          </br>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+
+    <div class="columns is-centered">
+      <div class="columns is-vcentered alife-panel">
+
+        <div class="column has-text-centered">
+        <div class="twentytwenty-container" data-orientation="horizontal" ratio="1">
+          <div class="video">
+            <video muted autoplay="autoplay" loop="loop">
+              <source src="./static/videos/results/X-Humans/00016.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="video">
+            <video muted autoplay="autoplay" loop="loop">
+              <source src="./static/videos/visualizations/gaussians.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+          <p>Visualization of the number of Gaussians</p>
+        </div>
+
+        <div class="column has-text-centered">
+        <div class="twentytwenty-container" data-orientation="horizontal" ratio="1">
+          <div class="video">
+            <video muted autoplay="autoplay" loop="loop">
+              <source src="./static/videos/results/X-Humans/00016.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="video">
+            <video muted autoplay="autoplay" loop="loop">
+              <source src="./static/videos/visualizations/heatmap.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+          <p>Gaussians density visualization as a heatmap</p>
+        </div>
+
+      </div>
+    </div>
+    </br>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Paper video. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Method</h2>
+        <div class="publication-video">
+          <iframe src="https://www.youtube.com/embed/vBzdAOKi1w0?rel=0&amp;showinfo=0"
+                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+    <br/>
+
+  </div>
+</section>
+
+<div class="has-text-centered">
+  <p>
+  <h2 class="title is-3">Results</h2>
+  </p>
+</div>
+
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <h2 class="title is-3">X-Humans (Novel poses)</h2>
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item">
+          <p class="overlay"> 15'131 Gaussians </p>
+          <video poster="" id="results01" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/results/X-Humans/00016.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item">
+          <p class="overlay"> 18'576 Gaussians </p>
+          <video poster="" id="results02" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/results/X-Humans/00018.mp4"
+                    type="video/mp4">
+          </video>
+
+        </div>
+        <div class="item">
+          <p class="overlay"> 12'261 Gaussians </p>
+          <video poster="" id="results03" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/results/X-Humans/00019.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item">
+          <p class="overlay"> 15'504 Gaussians </p>
+          <video poster="" id="results04" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/results/X-Humans/00027.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="hero is-light is-small">
+
+  <div class="hero-body">
+    <div class="container">
+      <h2 class="title is-3">PeopleSnapshot (Novel poses)</h2>
+      <div id="results-carousel_two" class="carousel results-carousel">
+        <div class="item">
+          <p class="overlay"> 13'605 Gaussians </p>
+          <video poster="" id="results01_02" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/results/SnapshotPeople/male3.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item">
+          <p class="overlay"> 11'969 Gaussians </p>
+          <video poster="" id="results02_02" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/results/SnapshotPeople/female4.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item">
+          <p class="overlay"> 14'641 Gaussians </p>
+          <video poster="" id="results03_02" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/results/SnapshotPeople/male4.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item">
+          <p class="overlay"> 13'679 Gaussians </p>
+          <video poster="" id="results04_02" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/results/SnapshotPeople/female3.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@InProceedings{Svitov_2024_Arxiv,
+    author    = {Svitov, David and Morerio, Pietro and Agapito, Lourdes and Del Bue, Alessio},
+    title     = {HAHA: Highly Articulated Gaussian Human Avatars with Textured Mesh Prior},
+    year      = {2024},
+}</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link"
+         href="TODO" target="_blank">
+        <i class="fas fa-file-pdf"></i>
+      </a>
+      <a class="icon-link" href="https://github.com/david-svitov/HAHA/" target="_blank" class="external-link" disabled>
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+          <p>
+            This webpage is built with the template from <a
+                  href="https://github.com/nerfies/nerfies.github.io" target="_blank">NeRFies</a>. We sincerely thank <a href="https://keunhong.com/" target="_blank">Keunhong Park</a> for developing and open-sourcing this template.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="./static/js/main.js"></script>
+<script src="./static/js/jquery-3.7.1.min.js"></script>
+<script src="./static/js/jquery.twentytwenty.js"></script>
+<script src="./static/js/jsquery.event.move.js"></script>
+<script>
+    var delayInMilliseconds = 500; // ms
+    setTimeout(function() {
+
+        $(function () {
+            $(".twentytwenty-container").twentytwenty();
+        });
+
+    }, delayInMilliseconds);
+</script>
+
+</body>
+</html>
