@@ -188,3 +188,11 @@ body {
     position: absolute;
     text-align: center;
 }
+
+.affiliation{
+    height: 40px;
+    margin-left: 40px;
+    margin-top: 20px;
+    margin-bottom: -20px;
+    position: relative;
+}
