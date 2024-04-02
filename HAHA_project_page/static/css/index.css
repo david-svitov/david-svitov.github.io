@@ -183,7 +183,8 @@ body {
 }
 
 .overlay {
-    margin: 5px 5px 5px 140px;
-    position:absolute;
+    width: 7%;
+    margin: auto;
+    position: absolute;
     text-align: center;
 }
