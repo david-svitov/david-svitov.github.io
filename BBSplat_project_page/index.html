@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="BillBoard Splatting (BBSplat): Learnable Textured Primitives for Novel View Synthesis">
+  <meta name="keywords" content="Gaussian splatting, textures, billboard splatting, novel view synthesis">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BillBoard Splatting (BBSplat): Learnable Textured Primitives for Novel View Synthesis</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/ns.html?id=GTM-W4QX9C9"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+
+  <link rel="stylesheet" href="https://unpkg.com/image-compare-viewer/dist/image-compare-viewer.min.css">
+  <link rel="stylesheet" href="./static/css/twentytwenty.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+<section class="hero">
+  <div class="columns is-centered">
+    <a href="https://pavis.iit.it/"><img class="affiliation" src="static/images/logos/iit_pavis.png" alt="" ></a>
+    <a href="https://unige.it/"><img class="affiliation" src="static/images/logos/unige.png" alt="" ></a>
+    <a href="https://www.ucl.ac.uk/"><img class="affiliation" src="static/images/logos/ucl.png" alt="" ></a>
+    <a href="https://ellis.eu/"><img class="affiliation" src="static/images/logos/ellis.png" alt="" ></a>
+  </div>
+</section>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">BillBoard Splatting (<img src="./static/images/logos/logo.png" alt="BB" style="display: inline-block; width: 50pt; padding-left: 5pt;">Splat): Learnable Textured Primitives for Novel View Synthesis</h1>
+          <div class="is-size-4 publication-authors">
+            <span class="author-block">
+              <div class="author-portrait">
+                <img class="img-fluid mb-3" src="static/images/authors/david.png" alt="" >
+              </div>
+              <a href="https://scholar.google.com/citations?user=GlkbBIgAAAAJ">David Svitov</a><sup>1,2</sup>
+            </span>
+            <span class="author-block">
+              <div class="author-portrait">
+                <img class="img-fluid mb-3" src="static/images/authors/pietro.png" alt="" >
+              </div>
+              <a href="https://scholar.google.it/citations?user=lPV9rbkAAAAJ">Pietro Morerio</a><sup>2</sup>
+            </span>
+            <span class="author-block">
+              <div class="author-portrait">
+                <img class="img-fluid mb-3" src="static/images/authors/lourdes.jpeg" alt="" >
+              </div>
+              <a href="https://scholar.google.com/citations?user=IRMX4-4AAAAJ">Lourdes Agapito</a><sup>3</sup>
+            </span>
+            <span class="author-block">
+              <div class="author-portrait">
+                <img class="img-fluid mb-3" src="static/images/authors/alessio.jpeg" alt="" >
+              </div>
+              <a href="https://scholar.google.com/citations?user=LUzvbGIAAAAJ">Alessio Del Bue</a><sup>2</sup>
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>Università degli Studi di Genova, Italy</span><br>
+            <span class="author-block"><sup>2</sup>Istituto Italiano di Tecnologia (IIT) Genoa, Italy</span><br>
+            <span class="author-block"><sup>3</sup>Department of Computer Science, University College London</span><br>
+          </div>
+
+          <!--
+          <div class="is-size-3 publication-authors">
+            <span class="author-block">Arxiv preprint</span>
+          </div>
+          -->
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2411.08508"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://arxiv.org/pdf/2411.08508"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Video Link. -->
+              <span class="link-block">
+                <a href="https://youtu.be/uRM7WFo5vVg"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span>
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href=""
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code (Coming soon)</span>
+                  </a>
+              </span>
+
+              <!-- Dataset Link.
+              <span class="link-block">
+                <a href="https://github.com/google/nerfies/releases/tag/0.1"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>Data</span>
+                  </a>
+              -->
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column has-text-centered">
+        <h2 class="title is-3">Abstract</h2>
+        <img src="./static/images/teaser.png" alt=""/> </br></br>
+        <div class="content has-text-justified">
+
+          <p>
+            We present billboard Splatting (<b>BBSplat</b>) - a novel approach for 3D scene representation based on textured geometric primitives.
+          </p>
+          <p>
+            BBSplat  represents the scene as a set of optimizable textured planar primitives with learnable RGB textures and alpha-maps to control their shape.
+            BBSplat primitives can be used in any Gaussian Splatting pipeline as drop-in replacements for Gaussians.
+            Our method's qualitative and quantitative improvements over 3D and 2D Gaussians are most noticeable when fewer primitives are used, when BBSplat
+            achieves over 1200 FPS. Our novel regularization term encourages textures to have a sparser structure, unlocking an efficient compression that
+            leads to a reduction in storage space of the model.
+          </p>
+          <p>
+            Our experiments show the efficiency of BBSplat on standard datasets of real indoor and outdoor scenes such as Tanks&Temples, DTU, and Mip-NeRF-360.
+            We demonstrate improvements on PSNR, SSIM, and LPIPS metrics compared to the state-of-the-art, especially for the case when fewer primitives are used,
+            which, on the other hand, leads to up to 2 times inference speed improvement for the same rendering quality.
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Paper video. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Method</h2>
+        <div class="publication-video">
+          <iframe src="https://www.youtube.com/embed/uRM7WFo5vVg?rel=0&amp;showinfo=0"
+                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+    <br/>
+
+  </div>
+</section>
+
+<div class="has-text-centered">
+  <p>
+  <h2 class="title is-3">Primitives Learnable Shape</h2>
+  </p>
+</div>
+
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="columns is-vcentered alife-panel">
+
+          <div class="column has-text-centered">
+          <div class="twentytwenty-container" data-orientation="horizontal" ratio="0.56">
+            <div class="video">
+              <video muted autoplay="autoplay" loop="loop">
+                <source src="./static/videos/visualizations/MCMC/render.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="video">
+              <video muted autoplay="autoplay" loop="loop">
+                <source src="./static/videos/visualizations/MCMC/shape.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+            <p style="font-size:20px">3DGS</p>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="twentytwenty-container" data-orientation="horizontal" ratio="0.56">
+              <div class="video">
+                <video muted autoplay="autoplay" loop="loop">
+                  <source src="./static/videos/visualizations/2DGS/render.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="video">
+                <video muted autoplay="autoplay" loop="loop">
+                  <source src="./static/videos/visualizations/2DGS/shape.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+            <p style="font-size:20px">2DGS</p>
+          </div>
+
+          <div class="column has-text-centered">
+          <div class="twentytwenty-container" data-orientation="horizontal" ratio="0.56">
+            <div class="video">
+              <video muted autoplay="autoplay" loop="loop">
+                <source src="./static/videos/visualizations/Ours/render.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="video">
+              <video muted autoplay="autoplay" loop="loop">
+                <source src="./static/videos/visualizations/Ours/shape.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+            <p style="font-size:20px">BBSplat(<b>Ours</b>)</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</br>
+<div class="has-text-centered">
+  <p>
+  <h2 class="title is-3">Results</h2>
+  </p>
+</div>
+
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+
+      <div class="has-text-centered">
+        <p>
+        <h3 class="title is-4">Tanks&Temples</h3>
+        </p>
+      </div>
+
+      <div class="columns is-centered">
+        <div class="columns is-vcentered alife-panel">
+
+          <div class="column has-text-centered">
+            <div class="twentytwenty-container" data-orientation="horizontal" ratio="0.56">
+              <div class="video">
+                <img src="static/images/results/TnT_Francis/3DGS.png"/>
+                <p class="description_content_left">3DGS</p>
+              </div>
+              <div class="video">
+                <img src="static/images/results/TnT_Francis/Ours.png"/>
+                <p class="description_content_right">Ours</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="twentytwenty-container" data-orientation="horizontal" ratio="0.56">
+              <div class="video">
+                <img src="static/images/results/TnT_Francis/MCMC.png"/>
+                <p class="description_content_left">3DGS-MCMC</p>
+              </div>
+              <div class="video">
+                <img src="static/images/results/TnT_Francis/Ours.png"/>
+                <p class="description_content_right">Ours</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="twentytwenty-container" data-orientation="horizontal" ratio="0.56">
+              <div class="video">
+                <img src="static/images/results/TnT_Francis/2DGS.png"/>
+                <p class="description_content_left">2DGS</p>
+              </div>
+              <div class="video">
+                <img src="static/images/results/TnT_Francis/Ours.png"/>
+                <p class="description_content_right">Ours</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <br/>
+      <div class="columns is-centered">
+        <div class="columns is-vcentered alife-panel">
+
+          <div class="column has-text-centered">
+            <div class="twentytwenty-container" data-orientation="horizontal" ratio="0.56">
+              <div class="video">
+                <img src="static/images/results/TnT_Train/3DGS.png"/>
+                <p class="description_content_left">3DGS</p>
+              </div>
+              <div class="video">
+                <img src="static/images/results/TnT_Train/Ours.png"/>
+                <p class="description_content_right">Ours</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="twentytwenty-container" data-orientation="horizontal" ratio="0.56">
+              <div class="video">
+                <img src="static/images/results/TnT_Train/MCMC.png"/>
+                <p class="description_content_left">3DGS-MCMC</p>
+              </div>
+              <div class="video">
+                <img src="static/images/results/TnT_Train/Ours.png"/>
+                <p class="description_content_right">Ours</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="twentytwenty-container" data-orientation="horizontal" ratio="0.56">
+              <div class="video">
+                <img src="static/images/results/TnT_Train/2DGS.png"/>
+                <p class="description_content_left">2DGS</p>
+              </div>
+              <div class="video">
+                <img src="static/images/results/TnT_Train/Ours.png"/>
+                <p class="description_content_right">Ours</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+
+      <div class="has-text-centered">
+        <p>
+        <h3 class="title is-4">Mip-NeRF-360</h3>
+        </p>
+      </div>
+
+      <div class="columns is-centered">
+        <div class="columns is-vcentered alife-panel">
+
+          <div class="column has-text-centered">
+            <div class="twentytwenty-container" data-orientation="horizontal" ratio="0.66">
+              <div class="video">
+                <img src="static/images/results/NeRF_Plant/3DGS.png"/>
+                <p class="description_content_left">3DGS</p>
+              </div>
+              <div class="video">
+                <img src="static/images/results/NeRF_Plant/Ours.png"/>
+                <p class="description_content_right">Ours</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="twentytwenty-container" data-orientation="horizontal" ratio="0.66">
+              <div class="video">
+                <img src="static/images/results/NeRF_Plant/MCMC.png"/>
+                <p class="description_content_left">3DGS-MCMC</p>
+              </div>
+              <div class="video">
+                <img src="static/images/results/NeRF_Plant/Ours.png"/>
+                <p class="description_content_right">Ours</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="twentytwenty-container" data-orientation="horizontal" ratio="0.66">
+              <div class="video">
+                <img src="static/images/results/NeRF_Plant/2DGS.png"/>
+                <p class="description_content_left">2DGS</p>
+              </div>
+              <div class="video">
+                <img src="static/images/results/NeRF_Plant/Ours.png"/>
+                <p class="description_content_right">Ours</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <br/>
+      <div class="columns is-centered">
+        <div class="columns is-vcentered alife-panel">
+
+          <div class="column has-text-centered">
+            <div class="twentytwenty-container" data-orientation="horizontal" ratio="0.66">
+              <div class="video">
+                <img src="static/images/results/NeRF_Counter/3DGS.png"/>
+                <p class="description_content_left">3DGS</p>
+              </div>
+              <div class="video">
+                <img src="static/images/results/NeRF_Counter/Ours.png"/>
+                <p class="description_content_right">Ours</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="twentytwenty-container" data-orientation="horizontal" ratio="0.66">
+              <div class="video">
+                <img src="static/images/results/NeRF_Counter/MCMC.png"/>
+                <p class="description_content_left">3DGS-MCMC</p>
+              </div>
+              <div class="video">
+                <img src="static/images/results/NeRF_Counter/Ours.png"/>
+                <p class="description_content_right">Ours</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="twentytwenty-container" data-orientation="horizontal" ratio="0.66">
+              <div class="video">
+                <img src="static/images/results/NeRF_Counter/2DGS.png"/>
+                <p class="description_content_left">2DGS</p>
+              </div>
+              <div class="video">
+                <img src="static/images/results/NeRF_Counter/Ours.png"/>
+                <p class="description_content_right">Ours</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+
+      <div class="has-text-centered">
+        <p>
+        <h3 class="title is-4">DTU</h3>
+        </p>
+      </div>
+
+      <div class="columns is-centered">
+        <div class="columns is-vcentered alife-panel">
+
+          <div class="column has-text-centered">
+            <div class="twentytwenty-container" data-orientation="horizontal" ratio="0.75">
+              <div class="video">
+                <img src="static/images/results/DTU_Food/3DGS.png"/>
+                <p class="description_content_left">3DGS</p>
+              </div>
+              <div class="video">
+                <img src="static/images/results/DTU_Food/Ours.png"/>
+                <p class="description_content_right">Ours</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="twentytwenty-container" data-orientation="horizontal" ratio="0.75">
+              <div class="video">
+                <img src="static/images/results/DTU_Food/MCMC.png"/>
+                <p class="description_content_left">3DGS-MCMC</p>
+              </div>
+              <div class="video">
+                <img src="static/images/results/DTU_Food/Ours.png"/>
+                <p class="description_content_right">Ours</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="twentytwenty-container" data-orientation="horizontal" ratio="0.75">
+              <div class="video">
+                <img src="static/images/results/DTU_Food/2DGS.png"/>
+                <p class="description_content_left">2DGS</p>
+              </div>
+              <div class="video">
+                <img src="static/images/results/DTU_Food/Ours.png"/>
+                <p class="description_content_right">Ours</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <br/>
+      <div class="columns is-centered">
+        <div class="columns is-vcentered alife-panel">
+
+          <div class="column has-text-centered">
+            <div class="twentytwenty-container" data-orientation="horizontal" ratio="0.75">
+              <div class="video">
+                <img src="static/images/results/DTU_Head/3DGS.png"/>
+                <p class="description_content_left">3DGS</p>
+              </div>
+              <div class="video">
+                <img src="static/images/results/DTU_Head/Ours.png"/>
+                <p class="description_content_right">Ours</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="twentytwenty-container" data-orientation="horizontal" ratio="0.75">
+              <div class="video">
+                <img src="static/images/results/DTU_Head/MCMC.png"/>
+                <p class="description_content_left">3DGS-MCMC</p>
+              </div>
+              <div class="video">
+                <img src="static/images/results/DTU_Head/Ours.png"/>
+                <p class="description_content_right">Ours</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="twentytwenty-container" data-orientation="horizontal" ratio="0.75">
+              <div class="video">
+                <img src="static/images/results/DTU_Head/2DGS.png"/>
+                <p class="description_content_left">2DGS</p>
+              </div>
+              <div class="video">
+                <img src="static/images/results/DTU_Head/Ours.png"/>
+                <p class="description_content_right">Ours</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{svitov2024billboard,
+  title={BillBoard Splatting (BBSplat): Learnable Textured Primitives for Novel View Synthesis},
+  author={Svitov, David and Morerio, Pietro and Agapito, Lourdes and Del Bue, Alessio},
+  journal={arXiv preprint arXiv:2411.08508},
+  year={2024}
+}</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link"
+         href="https://arxiv.org/pdf/2411.08508" target="_blank">
+        <i class="fas fa-file-pdf"></i>
+      </a>
+      <!--<a class="icon-link" href="https://github.com/david-svitov/HAHA/" target="_blank" class="external-link" disabled>
+        <i class="fab fa-github"></i>
+      </a>
+      -->
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+          <p>
+            This webpage is built with the template from <a
+                  href="https://github.com/nerfies/nerfies.github.io" target="_blank">NeRFies</a>
+            with interactive videos code from <a
+                  href="https://shangchenzhou.com/projects/ProPainter/">ProPainter</a>. We sincerely thank <a href="https://keunhong.com/" target="_blank">Keunhong Park</a> for developing and open-sourcing this template.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="./static/js/main.js"></script>
+<script src="./static/js/jquery-3.7.1.min.js"></script>
+<script src="./static/js/jquery.twentytwenty.js"></script>
+<script src="./static/js/jsquery.event.move.js"></script>
+<script>
+    var delayInMilliseconds = 500; // ms
+    setTimeout(function() {
+
+        $(function () {
+            $(".twentytwenty-container").twentytwenty();
+        });
+
+    }, delayInMilliseconds);
+</script>
+
+</body>
+</html>

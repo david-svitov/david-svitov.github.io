@@ -1,0 +1,228 @@
+body {
+  font-family: 'Noto Sans', sans-serif;
+}
+
+
+.footer .icon-link {
+    font-size: 25px;
+    color: #000;
+}
+
+.link-block a {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.dnerf {
+  font-variant: small-caps;
+}
+
+
+.teaser .hero-body {
+  padding-top: 0;
+  padding-bottom: 3rem;
+}
+
+.teaser {
+  font-family: 'Google Sans', sans-serif;
+}
+
+
+.publication-title {
+}
+
+.publication-banner {
+  max-height: parent;
+
+}
+
+.publication-banner video {
+  position: relative;
+  left: auto;
+  top: auto;
+  transform: none;
+  object-fit: fit;
+}
+
+.publication-header .hero-body {
+}
+
+.publication-title {
+    font-family: 'Google Sans', sans-serif;
+}
+
+.publication-authors {
+    font-family: 'Google Sans', sans-serif;
+}
+
+.publication-venue {
+    color: #555;
+    width: fit-content;
+    font-weight: bold;
+}
+
+.publication-awards {
+    color: #ff3860;
+    width: fit-content;
+    font-weight: bolder;
+}
+
+.publication-authors {
+}
+
+.publication-authors a {
+   color: hsl(204, 86%, 53%) !important;
+}
+
+.publication-authors a:hover {
+    text-decoration: underline;
+}
+
+.author-portrait {
+    overflow: hidden;
+    width: 50%;
+    height: 50%;
+    font-size: 0;
+    margin: auto;
+}
+
+.author-block {
+  display: inline-block;
+}
+
+.publication-banner img {
+}
+
+.publication-authors {
+  /*color: #4286f4;*/
+}
+
+.publication-video {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%;
+
+    overflow: hidden;
+    border-radius: 10px !important;
+}
+
+.publication-video iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.publication-body img {
+}
+
+.results-carousel {
+  overflow: hidden;
+}
+
+.results-carousel .item {
+  margin: 5px;
+  overflow: hidden;
+  border: 1px solid #bbb;
+  border-radius: 10px;
+  padding: 0;
+  font-size: 15pt;
+}
+
+.results-carousel video {
+  margin: 0;
+}
+
+
+.alife-panel {
+  background: #f5f5f5;
+  border-radius: 10px;
+}
+
+.alife-panel .alife-image {
+  width: 80%;
+  border-radius: 5px;
+}
+
+.alife-video-column {
+}
+
+.alife-panel .slider {
+  margin: 0 !important;
+}
+
+.alife-panel .slider {
+  margin: 0 !important;
+}
+
+#alife-image-wrapper {
+  width: 100%;
+}
+#alife-image-wrapper img {
+  border-radius: 5px;
+}
+
+.author-portrait {
+    overflow: hidden;
+    width: 100px;
+    height: 100px;
+    font-size: 0;
+    margin: auto;
+}
+
+.author-portrait img {
+    border-radius: 50%;
+    width: 100px;
+    position: relative;
+}
+
+.block {
+    margin: 0.6180rem 0;
+}
+
+.overlay {
+    width: 7%;
+    margin: auto;
+    position: absolute;
+    text-align: center;
+}
+
+.affiliation{
+    height: 40px;
+    margin-left: 40px;
+    margin-top: 20px;
+    margin-bottom: -20px;
+    position: relative;
+}
+
+.description_content_left {
+    position: absolute;
+    width: 100%;
+    text-align: left;
+
+    padding: 10px;
+    bottom: 0;
+    left: 0;
+    box-sizing: border-box;
+    color: #fff;
+    margin: 0;
+    font-size: 17pt;
+    -webkit-text-stroke: 1px black;
+}
+
+.description_content_right {
+    position: absolute;
+    width: 100%;
+    text-align: right;
+
+    padding: 10px;
+    bottom: 0;
+    left: -20px;
+    box-sizing: border-box;
+    color: #fff;
+    margin: 0;
+    font-size: 17pt;
+    -webkit-text-stroke: 1px black;
+}
