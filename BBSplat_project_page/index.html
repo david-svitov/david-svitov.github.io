@@ -132,12 +132,12 @@
               </span>
               <!-- Code Link. -->
               <span class="link-block">
-                <a href=""
+                <a href="https://github.com/david-svitov/BBSplat"
                    class="external-link button is-normal is-rounded is-dark">
                   <span class="icon">
                       <i class="fab fa-github"></i>
                   </span>
-                  <span>Code (Coming soon)</span>
+                  <span>Code</span>
                   </a>
               </span>
 
@@ -599,6 +599,108 @@
   </div>
 </section>
 
+</br>
+<section class="hero">
+  <div class="container is-max-desktop">
+    <!-- Concurrent Works. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column has-text-centered">
+        <h2 class="title is-3">Concurrent Works</h2>
+
+        <style type="text/css">
+            .tg  {border-collapse:collapse;border-color:#ccc;border-spacing:0;}
+            .tg td{background-color:#fff;border-color:#ccc;border-style:solid;border-width:1px;color:#333;
+                overflow:hidden;padding:10px 5px;word-break:normal;}
+            .tg th{background-color:#f0f0f0;border-color:#ccc;border-style:solid;border-width:1px;color:#333;
+                font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+            .tg .tg-7fle{background-color:#efefef;font-weight:bold;text-align:center;vertical-align:top}
+            .tg .tg-baqh{text-align:center;vertical-align:top}
+        </style>
+        <table class="tg" style="width:100%"><thead>
+        <tr style="border-bottom: 2pt solid black;">
+          <th class="tg-7fle">Method</th>
+          <th class="tg-7fle">Learnable Shape</th>
+          <th class="tg-7fle">RGB Texture</th>
+          <th class="tg-7fle">Alpha Texture</th>
+          <th class="tg-7fle">Base</th>
+        </tr></thead>
+          <tbody>
+          <tr>
+            <td class="tg-baqh">3D Convex Splatting [1]</td>
+            <td class="tg-baqh">&#9989;</td>
+            <td class="tg-baqh">&#10060;</td>
+            <td class="tg-baqh">&#10060;</td>
+            <td class="tg-baqh">3DGS</td>
+          </tr>
+          <tr>
+            <td class="tg-baqh">Texture-GS [2]</td>
+            <td class="tg-baqh">&#10060;</td>
+            <td class="tg-baqh">&#9989;</td>
+            <td class="tg-baqh">&#10060;</td>
+            <td class="tg-baqh">3DGS</td>
+          </tr>
+          <tr style="border-bottom: 2pt solid black;">
+            <td class="tg-baqh">Textured Gaussians [3]</td>
+            <td class="tg-baqh">&#9989;</td>
+            <td class="tg-baqh">&#9989;</td>
+            <td class="tg-baqh">&#9989;</td>
+            <td class="tg-baqh">3DGS</td>
+          </tr>
+          <tr>
+            <td class="tg-baqh">SuperGaussians [4]</td>
+            <td class="tg-baqh">&#9989;</td>
+            <td class="tg-baqh">&#10060;</td>
+            <td class="tg-baqh">&#10060;</td>
+            <td class="tg-baqh">2DGS</td>
+          </tr>
+          <tr>
+            <td class="tg-baqh">HDGS [5]</td>
+            <td class="tg-baqh">&#10060;</td>
+            <td class="tg-baqh">&#9989;</td>
+            <td class="tg-baqh">&#10060;</td>
+            <td class="tg-baqh">2DGS</td>
+          </tr>
+          <tr>
+            <td class="tg-baqh">GSTex [6]</td>
+            <td class="tg-baqh">&#10060;</td>
+            <td class="tg-baqh">&#9989;</td>
+            <td class="tg-baqh">&#10060;</td>
+            <td class="tg-baqh">2DGS</td>
+          </tr>
+          <tr>
+            <td class="tg-baqh">Gaussian Billboards [7]</td>
+            <td class="tg-baqh">&#10060;</td>
+            <td class="tg-baqh">&#9989;</td>
+            <td class="tg-baqh">&#10060;</td>
+            <td class="tg-baqh">2DGS</td>
+          </tr>
+          <tr>
+            <td class="tg-baqh"><b>BBSplat (Ours)</b></td>
+            <td class="tg-baqh">&#9989;</td>
+            <td class="tg-baqh">&#9989;</td>
+            <td class="tg-baqh">&#9989;</td>
+            <td class="tg-baqh">2DGS</td>
+          </tr>
+          </tbody>
+        </table>
+
+        <div class="content has-text-justified">
+          <ol>
+            <li><a href="https://convexsplatting.github.io/">3D Convex Splatting: Radiance Field Rendering with 3D Smooth Convexes</a></li>
+            <li><a href="https://slothfulxtx.github.io/TexGS/">Texture-GS: Disentangling the Geometry and Texture for 3D Gaussian Splatting Editing</a></li>
+            <li><a href="https://textured-gaussians.github.io/">Textured Gaussians for Enhanced 3D Scene Appearance Modeling</a></li>
+            <li><a href="https://ruixu.me/html/SuperGaussians/index.html">SuperGaussians: Enhancing Gaussian Splatting Using Primitives with Spatially Varying Colors</a></li>
+            <li><a href="https://timsong412.github.io/HDGS-ProjPage/">HDGS: Textured 2D Gaussian Splatting for Enhanced Scene Rendering</a></li>
+            <li><a href="https://lessvrong.com/cs/gstex/">GStex: Per-Primitive Texturing of 2D Gaussian Splatting for Decoupled Appearance and Geometry Modeling</a></li>
+            <li><a href="https://arxiv.org/pdf/2412.12734">Gaussian Billboards: Expressive 2D Gaussian Splatting with Textures</a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
 
 <section class="section" id="BibTeX">
   <div class="container is-max-desktop content">
@@ -620,10 +722,9 @@
          href="https://arxiv.org/pdf/2411.08508" target="_blank">
         <i class="fas fa-file-pdf"></i>
       </a>
-      <!--<a class="icon-link" href="https://github.com/david-svitov/HAHA/" target="_blank" class="external-link" disabled>
+      <a class="icon-link" href="https://github.com/david-svitov/BBSplat" target="_blank" class="external-link" disabled>
         <i class="fab fa-github"></i>
       </a>
-      -->
     </div>
     <div class="columns is-centered">
       <div class="column is-8">
