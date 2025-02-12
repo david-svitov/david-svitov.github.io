@@ -175,14 +175,12 @@
           <p>
             BBSplat  represents the scene as a set of optimizable textured planar primitives with learnable RGB textures and alpha-maps to control their shape.
             BBSplat primitives can be used in any Gaussian Splatting pipeline as drop-in replacements for Gaussians.
-            Our method's qualitative and quantitative improvements over 3D and 2D Gaussians are most noticeable when fewer primitives are used, when BBSplat
-            achieves over 1200 FPS. Our novel regularization term encourages textures to have a sparser structure, unlocking an efficient compression that
+            The proposed primitives close the rendering quality gap between 2D and 3D Gaussian Splatting (GS), preserving the accurate mesh extraction ability of 2D primitives.
+            Our novel regularization term encourages textures to have a sparser structure, unlocking an efficient compression that
             leads to a reduction in storage space of the model.
           </p>
           <p>
             Our experiments show the efficiency of BBSplat on standard datasets of real indoor and outdoor scenes such as Tanks&Temples, DTU, and Mip-NeRF-360.
-            We demonstrate improvements on PSNR, SSIM, and LPIPS metrics compared to the state-of-the-art, especially for the case when fewer primitives are used,
-            which, on the other hand, leads to up to 2 times inference speed improvement for the same rendering quality.
           </p>
         </div>
       </div>
@@ -191,10 +189,9 @@
   </div>
 </section>
 
-
+<!--
 <section class="section">
   <div class="container is-max-desktop">
-    <!-- Paper video. -->
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
         <h2 class="title is-3">Method</h2>
@@ -208,6 +205,8 @@
 
   </div>
 </section>
+-->
+</br>
 
 <div class="has-text-centered">
   <p>
@@ -701,6 +700,26 @@
   </div>
 </section>
 
+</br></br>
+<section class="hero">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column has-text-centered">
+        <h2 class="title is-3">Inference speed</h2>
+        <img src="./static/images/metrics_plot_2dgs.png" alt=""/> </br></br>
+        <div class="content has-text-justified">
+
+          <p>
+            Textured 2D primitives allow to achieve improvement of quantitative metrics values and at the same time acceleration of inference (for 80K, 40K points) compared to 2D Gaussian primitives.
+          </p>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
 
 <section class="section" id="BibTeX">
   <div class="container is-max-desktop content">
