@@ -873,14 +873,38 @@
 <script src="./static/js/jquery.twentytwenty.js"></script>
 <script src="./static/js/jsquery.event.move.js"></script>
 <script>
-    var delayInMilliseconds = 500; // ms
-    setTimeout(function() {
+    function initTwentyTwentyAfterVideosReady() {
+        const containers = document.querySelectorAll('.twentytwenty-container');
 
-        $(function () {
-            $(".twentytwenty-container").twentytwenty();
+        containers.forEach(container => {
+            const videos = container.querySelectorAll('video');
+            let videosLoaded = 0;
+
+            if (videos.length === 0) {
+                $(container).twentytwenty();
+                return;
+            }
+
+            videos.forEach(video => {
+                if (video.readyState >= 1) {
+                    videosLoaded++;
+                } else {
+                    video.addEventListener('loadedmetadata', () => {
+                        videosLoaded++;
+                        if (videosLoaded === videos.length) {
+                            $(container).twentytwenty();
+                        }
+                    });
+                }
+            });
+
+            if (videosLoaded === videos.length) {
+                $(container).twentytwenty();
+            }
         });
+    }
 
-    }, delayInMilliseconds);
+    document.addEventListener('DOMContentLoaded', initTwentyTwentyAfterVideosReady);
 </script>
 
 </body>
