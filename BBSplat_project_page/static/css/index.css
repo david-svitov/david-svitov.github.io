@@ -197,6 +197,12 @@ body {
     position: relative;
 }
 
+.conf_logo{
+    margin-bottom: -5pt;
+    height: 30pt;
+    position: relative;
+}
+
 .description_content_left {
     position: absolute;
     width: 100%;
