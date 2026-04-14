@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Planet Simulator</title>
+  <script src="modules/kontra.js"></script>
+  <style>
+      html, body {
+          margin: 0;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          background: #111;
+      }
+
+      canvas {
+          display: block;
+          width: 100vw;
+          height: 100vh;
+      }
+  </style>
+</head>
+<body>
+
+<canvas id="game"></canvas>
+
+<script>
+    let { init, Sprite, GameLoop, Vector, load } = kontra;
+    let { canvas } = init('game');
+
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    let G = 1.0; //6.674;
+    let dt = 0.01;
+
+    // sqrt(G * M / r) - to calculate orbital speed
+    function calculateVelocity(central_M, central_position, planet_position) {
+        let eps = 8;
+        let r = Vector(planet_position.x - central_position.x, planet_position.y - central_position.y);
+        let dist = r.length();
+        let rHat = r.normalize();
+        let tangent = Vector(-rHat.y, rHat.x);
+
+        let v = Math.sqrt(
+            G * central_M * dist * dist / Math.pow(dist * dist + eps * eps, 1.5)
+        );
+
+        return tangent.scale(v);
+    }
+
+    function computeAcceleration(i, positions) {
+        let acceleration = Vector(0, 0);
+        let eps = 8;
+
+        for (let j = 0; j < positions.length; j++) {
+            if (i === j) continue;
+
+            let r = Vector(positions[j].x - positions[i].x, positions[j].y - positions[i].y);
+            let d2 = r.x * r.x + r.y * r.y + eps * eps;
+            let d3 = d2 * Math.sqrt(d2);
+
+            // a_j = G * m_j * r / d**3 - we calculate acceleration directly based on the Newton's law of universal gravitation
+            let factor = G * planets_properties[j].mass / d3;
+            acceleration = acceleration.add(r.scale(factor));
+        }
+
+        return acceleration;
+    }
+
+
+    let planets = [];
+    let planets_properties = [
+        {
+            path: "assets/mercury.png",
+            position: Vector(canvas.width / 2 + canvas.width * 0.05, canvas.height / 2),
+            area: canvas.width * 0.004,
+            mass: 4,
+            rotation_speed: 0.001,
+            velocity: Vector(0, 0),
+            acceleration: Vector(0, 0),
+        },
+        {
+            path: "assets/venus.png",
+            position: Vector(canvas.width / 2 + canvas.width * 0.1, canvas.height / 2),
+            area: canvas.width * 0.010,
+            mass: 30,
+            rotation_speed: 0.001,
+            velocity: Vector(0, 0),
+            acceleration: Vector(0, 0),
+        },
+        {
+            path: "assets/earth.png",
+            position: Vector(canvas.width / 2 + canvas.width * 0.15, canvas.height / 2),
+            area: canvas.width * 0.012,
+            mass: 40,
+            rotation_speed: 0.001,
+            velocity: Vector(0, 0),
+            acceleration: Vector(0, 0),
+        },
+        {
+            path: "assets/moon.png",
+            position: Vector(canvas.width / 2 + canvas.width * 0.14, canvas.height / 2),
+            area: canvas.width * 0.003,
+            mass: 0.01,
+            rotation_speed: 0.001,
+            velocity: Vector(0, 0),
+            acceleration: Vector(0, 0),
+        },
+        {
+            path: "assets/mars.png",
+            position: Vector(canvas.width / 2 + canvas.width * 0.2, canvas.height / 2),
+            area: canvas.width * 0.006,
+            mass: 10,
+            rotation_speed: 0.001,
+            velocity: Vector(0, 0),
+            acceleration: Vector(0, 0),
+        },
+        {
+            path: "assets/sun.png",
+            position: Vector(canvas.width / 2, canvas.height / 2),
+            area: canvas.width * 0.05,
+            mass: 4000,
+            rotation_speed: 0.0001,
+            velocity: Vector(0, 0),
+            acceleration: Vector(0, 0),
+        }
+    ];
+
+    let planet_indices = {
+        "mercury": 0,
+        "venus": 1,
+        "earth": 2,
+        "moon": 3,
+        "mars": 4,
+        "sun": 5,
+    };
+
+    // Calculate rotation speed
+    planets_properties[planet_indices.mercury].velocity = calculateVelocity(
+        planets_properties[planet_indices.sun].mass,
+        planets_properties[planet_indices.sun].position,
+        planets_properties[planet_indices.mercury].position
+    );
+
+    planets_properties[planet_indices.venus].velocity = calculateVelocity(
+        planets_properties[planet_indices.sun].mass,
+        planets_properties[planet_indices.sun].position,
+        planets_properties[planet_indices.venus].position
+    );
+
+    planets_properties[planet_indices.earth].velocity = calculateVelocity(
+        planets_properties[planet_indices.sun].mass,
+        planets_properties[planet_indices.sun].position,
+        planets_properties[planet_indices.earth].position
+    );
+
+    planets_properties[planet_indices.moon].velocity =
+        planets_properties[planet_indices.earth].velocity.add(
+            calculateVelocity(
+                planets_properties[planet_indices.earth].mass,
+                planets_properties[planet_indices.earth].position,
+                planets_properties[planet_indices.moon].position
+            ).scale(0.8)
+        );
+
+    planets_properties[planet_indices.mars].velocity = calculateVelocity(
+        planets_properties[planet_indices.sun].mass,
+        planets_properties[planet_indices.sun].position,
+        planets_properties[planet_indices.mars].position
+    );
+
+    function setSunCompensationVelocity() {
+        let sun_idx = planet_indices.sun;
+        let total_momentum = Vector(0, 0);
+
+        for (let i = 0; i < planets_properties.length; i++) {
+            if (i === sun_idx) continue;
+            let m = planets_properties[i].mass;
+            let v = planets_properties[i].velocity;
+            total_momentum = total_momentum.add(Vector(m * v.x, m * v.y));
+        }
+
+        planets_properties[sun_idx].velocity = Vector(
+            -total_momentum.x / planets_properties[sun_idx].mass,
+            -total_momentum.y / planets_properties[sun_idx].mass
+        );
+    }
+
+    setSunCompensationVelocity();
+
+    // Game loop
+    let loop = GameLoop({
+        update() {
+            for (let step = 0; step < 10; step++) { // skip some frames to accelerate rendering
+                // Update positions with Verlet
+                let updated_positions = [];
+                for (let i = 0; i < planets.length; i++) {
+                    let velocity = planets_properties[i].velocity;
+                    let acceleration = planets_properties[i].acceleration;
+                    let new_pos = Vector(
+                        planets[i].x + velocity.x * dt + 0.5 * acceleration.x * dt * dt,
+                        planets[i].y + velocity.y * dt + 0.5 * acceleration.y * dt * dt
+                    );
+                    updated_positions.push(new_pos); // Store new position to update it later
+                }
+
+                // Update all positions and rotations
+                for (let i = 0; i < updated_positions.length; i++) {
+                    planets[i].x = updated_positions[i].x;
+                    planets[i].y = updated_positions[i].y;
+                    planets[i].rotation += planets_properties[i].rotation_speed;
+                }
+
+                // Calculate new velocity and acceleration
+                let positions = planets.map(p => Vector(p.x, p.y));
+                for (let i = 0; i < planets.length; i++) {
+                    let velocity = planets_properties[i].velocity;
+                    let old_acceleration = planets_properties[i].acceleration;
+                    let new_acceleration = computeAcceleration(i, positions);
+
+                    // update velocity and acceleration
+                    planets_properties[i].velocity = Vector(
+                        velocity.x + 0.5 * (old_acceleration.x + new_acceleration.x) * dt,
+                        velocity.y + 0.5 * (old_acceleration.y + new_acceleration.y) * dt
+                    );
+                    planets_properties[i].acceleration = new_acceleration;
+                }
+            }
+        },
+
+        render() {
+            for (let i = 0; i < planets.length; ++i) {
+                planets[i].render();
+            }
+        }
+    });
+
+    // Load images for all planets and start the game loop
+    let planets_files = [];
+    for (let i = 0; i < planets_properties.length; ++i) {
+        planets_files.push(planets_properties[i]["path"]);
+    }
+    load(...planets_files).then((assets) => {
+        for (let i = 0; i < assets.length; i++) {
+            let image = assets[i];
+
+            planet_sprite = Sprite({
+                x: planets_properties[i]["position"].x,
+                y: planets_properties[i]["position"].y,
+                scaleX: planets_properties[i]["area"] / image.width,
+                scaleY: planets_properties[i]["area"] / image.height,
+                anchor: {x: 0.5, y: 0.5},
+                image: image
+            });
+            planets.push(planet_sprite);
+        }
+
+        // Initialize acceleration
+        let positions = planets.map(p => Vector(p.x, p.y));
+        for (let i = 0; i < planets.length; i++) {
+            planets_properties[i].acceleration = computeAcceleration(i, positions);
+        }
+
+        loop.start();
+    });
+</script>
+
+</body>
+</html>
