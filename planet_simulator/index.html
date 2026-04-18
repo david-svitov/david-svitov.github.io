@@ -25,8 +25,11 @@
 <canvas id="game"></canvas>
 
 <script>
-    let { init, Sprite, GameLoop, Vector, load } = kontra;
+    let { init, Sprite, GameLoop, Vector, Text, Button, imageAssets, initPointer, initKeys, keyPressed, load } = kontra;
     let { canvas } = init('game');
+
+    initPointer();
+    initKeys();
 
     function resizeCanvas() {
         canvas.width = window.innerWidth;
@@ -35,8 +38,16 @@
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
+    let screen_size = Math.max(canvas.width, canvas.height);
+
     let G = 1.0; //6.674;
     let dt = 0.01;
+
+    let ship_trail = [];
+    let max_trail_length = 2000;
+    let ship_fuel = 200;
+    let ship_oxygen = 400;
+    let max_ship_speed = 7;
 
     // sqrt(G * M / r) - to calculate orbital speed
     function calculateVelocity(central_M, central_position, planet_position) {
@@ -72,13 +83,68 @@
         return acceleration;
     }
 
+    function rotateVector(v, angle) {
+        let cos = Math.cos(angle);
+        let sin = Math.sin(angle);
+
+        return Vector(
+            v.x * cos - v.y * sin,
+            v.x * sin + v.y * cos
+        );
+    }
+
+    function velocityAngleDeg(v) {
+        let angle = Math.atan2(v.y, v.x) * 180 / Math.PI;
+        if (angle < 0) angle += 360;
+        return angle;
+    }
+
+    function drawShipTrail(ctx, trail) {
+        if (trail.length < 2) return;
+        for (let i = 1; i < trail.length; i++) {
+            let p1 = trail[i - 1];
+            let p2 = trail[i];
+
+            let t = i / (trail.length - 1);
+
+            let r = Math.round(160 + 95 * t);   // 160 -> 255
+            let g = Math.round(160 + 95 * t);   // 160 -> 255
+            let b = Math.round(160 - 160 * t);  // 160 -> 0
+
+            let alpha = 0.05 + 0.95 * t;
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+    }
+
+    // Ship info hud
+    let ship_hud = Text({
+        text: '',
+        font: '18px Arial',
+        color: 'white',
+        strokeColor: 'black',
+        lineWidth: 4,
+        x: 20,
+        y: 20,
+        textAlign: 'left'
+    });
+
+    let panel_buttons;
+    let left_button;
+    let right_button;
+    let thrust_button;
+    let reverse_button;
 
     let planets = [];
     let planets_properties = [
         {
             path: "assets/mercury.png",
-            position: Vector(canvas.width / 2 + canvas.width * 0.05, canvas.height / 2),
-            area: canvas.width * 0.004,
+            position: Vector(canvas.width / 2 + screen_size * 0.05, canvas.height / 2),
+            area: screen_size * 0.004,
             mass: 4,
             rotation_speed: 0.001,
             velocity: Vector(0, 0),
@@ -86,8 +152,8 @@
         },
         {
             path: "assets/venus.png",
-            position: Vector(canvas.width / 2 + canvas.width * 0.1, canvas.height / 2),
-            area: canvas.width * 0.010,
+            position: Vector(canvas.width / 2 + screen_size * 0.1, canvas.height / 2),
+            area: screen_size * 0.010,
             mass: 30,
             rotation_speed: 0.001,
             velocity: Vector(0, 0),
@@ -95,8 +161,8 @@
         },
         {
             path: "assets/earth.png",
-            position: Vector(canvas.width / 2 + canvas.width * 0.15, canvas.height / 2),
-            area: canvas.width * 0.012,
+            position: Vector(canvas.width / 2 + screen_size * 0.15, canvas.height / 2),
+            area: screen_size * 0.012,
             mass: 40,
             rotation_speed: 0.001,
             velocity: Vector(0, 0),
@@ -104,8 +170,8 @@
         },
         {
             path: "assets/moon.png",
-            position: Vector(canvas.width / 2 + canvas.width * 0.14, canvas.height / 2),
-            area: canvas.width * 0.003,
+            position: Vector(canvas.width / 2 + screen_size * 0.14, canvas.height / 2),
+            area: screen_size * 0.003,
             mass: 0.01,
             rotation_speed: 0.001,
             velocity: Vector(0, 0),
@@ -113,8 +179,8 @@
         },
         {
             path: "assets/mars.png",
-            position: Vector(canvas.width / 2 + canvas.width * 0.2, canvas.height / 2),
-            area: canvas.width * 0.006,
+            position: Vector(canvas.width / 2 + screen_size * 0.2, canvas.height / 2),
+            area: screen_size * 0.006,
             mass: 10,
             rotation_speed: 0.001,
             velocity: Vector(0, 0),
@@ -123,9 +189,18 @@
         {
             path: "assets/sun.png",
             position: Vector(canvas.width / 2, canvas.height / 2),
-            area: canvas.width * 0.05,
+            area: screen_size * 0.05,
             mass: 4000,
             rotation_speed: 0.0001,
+            velocity: Vector(0, 0),
+            acceleration: Vector(0, 0),
+        },
+        {
+            path: "assets/ship.png",
+            position: Vector(0, 0),
+            area: screen_size * 0.004,
+            mass: 0.000001,
+            rotation_speed: 0,
             velocity: Vector(0, 0),
             acceleration: Vector(0, 0),
         }
@@ -138,9 +213,10 @@
         "moon": 3,
         "mars": 4,
         "sun": 5,
+        "ship": 6,
     };
 
-    // Calculate rotation speed
+    // Calculate planets speed
     planets_properties[planet_indices.mercury].velocity = calculateVelocity(
         planets_properties[planet_indices.sun].mass,
         planets_properties[planet_indices.sun].position,
@@ -174,6 +250,25 @@
         planets_properties[planet_indices.mars].position
     );
 
+    // Ship positioning next to Earth
+    let earth = planets_properties[planet_indices.earth];
+    let shipOrbitRadius = canvas.width * 0.01;
+
+    planets_properties[planet_indices.ship].position = Vector(
+        earth.position.x + shipOrbitRadius,
+        earth.position.y
+    );
+
+    // Ship speed
+    planets_properties[planet_indices.ship].velocity =
+        planets_properties[planet_indices.earth].velocity.add(
+            calculateVelocity(
+                planets_properties[planet_indices.earth].mass,
+                planets_properties[planet_indices.earth].position,
+                planets_properties[planet_indices.ship].position
+            )
+        );
+
     function setSunCompensationVelocity() {
         let sun_idx = planet_indices.sun;
         let total_momentum = Vector(0, 0);
@@ -193,10 +288,48 @@
 
     setSunCompensationVelocity();
 
+    function engineControl(direction) {
+        let ship = planets_properties[planet_indices.ship];
+        if (ship_fuel > 0 && ship_oxygen > 0) {
+            if (direction === "left") {
+                ship.velocity = rotateVector(ship.velocity, -0.03);
+                ship_fuel -= 1;
+            } else if (direction === "right") {
+                ship.velocity = rotateVector(ship.velocity, 0.03);
+                ship_fuel -= 1;
+            }
+
+            if (direction === "up") {
+                if (ship.velocity.length() < max_ship_speed) { // Limit ship speed to some magic number
+                    ship.velocity = ship.velocity.scale(1.01);
+                    ship_fuel -= 1;
+                }
+            } else if (direction === "down") {
+                ship.velocity = ship.velocity.scale(0.99);
+                ship_fuel -= 1;
+            }
+        }
+        if (ship_fuel < 0) ship_fuel = 0;
+    }
+
     // Game loop
     let loop = GameLoop({
         update() {
-            for (let step = 0; step < 10; step++) { // skip some frames to accelerate rendering
+            // key events
+            if (keyPressed('arrowleft')) {
+                engineControl("left");
+            } else if (keyPressed('arrowright')) {
+                engineControl("right");
+            }
+            if (keyPressed('arrowup')) {
+                engineControl("up");
+            } else if (keyPressed('arrowdown')) {
+                engineControl("down");
+            }
+
+            if (ship_oxygen > 0) ship_oxygen -= 0.05;
+
+            for (let step = 0; step < 5; step++) { // skip some frames to accelerate rendering
                 // Update positions with Verlet
                 let updated_positions = [];
                 for (let i = 0; i < planets.length; i++) {
@@ -231,22 +364,58 @@
                     planets_properties[i].acceleration = new_acceleration;
                 }
             }
+
+            // Update ship trail
+            ship_trail.push({ x: planets[planet_indices.ship].x, y: planets[planet_indices.ship].y });
+            if (ship_trail.length > max_trail_length) {
+                ship_trail.shift();
+            }
+            // Update ship info
+            let ship = planets_properties[planet_indices.ship];
+            let speed = ship.velocity.length();
+            let angle = velocityAngleDeg(ship.velocity);
+            let oxygen_postfix = "";
+            if (ship_oxygen <= 0.01) oxygen_postfix = "  --- The crew is dead";
+            ship_hud.text =
+                `Ship speed: ${speed.toFixed(3)} km/h\n` +
+                `Direction: ${angle.toFixed(1)}°\n\n` +
+                `Ship fuel: ${ship_fuel} liters\n` +
+                `Oxygen: ${ship_oxygen.toFixed(3)} m^3` + oxygen_postfix;
         },
 
         render() {
+            let ctx = canvas.getContext('2d');
+            drawShipTrail(ctx, ship_trail);
+
             for (let i = 0; i < planets.length; ++i) {
                 planets[i].render();
             }
+
+            ship_hud.render();
+            if (panel_buttons) panel_buttons.render();
+            if (left_button) left_button.render();
+            if (right_button) right_button.render();
+            if (thrust_button) thrust_button.render();
+            if (reverse_button) reverse_button.render();
         }
     });
 
     // Load images for all planets and start the game loop
-    let planets_files = [];
+    let image_files = [];
     for (let i = 0; i < planets_properties.length; ++i) {
-        planets_files.push(planets_properties[i]["path"]);
+        image_files.push(planets_properties[i]["path"]);
     }
-    load(...planets_files).then((assets) => {
-        for (let i = 0; i < assets.length; i++) {
+    image_files.push("./assets/panel/panel.png")
+    image_files.push("./assets/panel/left.png")
+    image_files.push("./assets/panel/left_press.png")
+    image_files.push("./assets/panel/right.png")
+    image_files.push("./assets/panel/right_press.png")
+    image_files.push("./assets/panel/thrust.png")
+    image_files.push("./assets/panel/thrust_press.png")
+    image_files.push("./assets/panel/reverse.png")
+    image_files.push("./assets/panel/reverse_press.png")
+    load(...image_files).then((assets) => {
+        for (let i = 0; i < planets_properties.length; i++) {
             let image = assets[i];
 
             planet_sprite = Sprite({
@@ -265,6 +434,90 @@
         for (let i = 0; i < planets.length; i++) {
             planets_properties[i].acceleration = computeAcceleration(i, positions);
         }
+
+        let panel_height = imageAssets['./assets/panel/panel'].height;
+        let panel_width = imageAssets['./assets/panel/panel'].width;
+        let interface_scale = screen_size / panel_width * 0.2;
+        let panel_x = canvas.width / 2;
+        let panel_y = canvas.height - panel_height * interface_scale / 2;
+        panel_buttons = Sprite({
+            x: panel_x,
+            y: panel_y,
+            scaleX: interface_scale,
+            scaleY: interface_scale,
+            anchor: {x: 0.5, y: 0.5},
+            image: imageAssets['./assets/panel/panel']
+        });
+
+        // Set buttons
+        left_button = Button({
+            x: panel_x - imageAssets['./assets/panel/left'].width * interface_scale * 0.53,
+            y: panel_y - imageAssets['./assets/panel/left'].height * interface_scale * 0.8,
+            anchor: {x: 0.5, y: 0.5},
+            scaleX: interface_scale,
+            scaleY: interface_scale,
+            image: imageAssets['./assets/panel/left'],
+
+            // pointer events
+            onDown() {
+                this.image = imageAssets['./assets/panel/left_press'];
+                engineControl("left");
+            },
+            onUp() {
+                this.image = imageAssets['./assets/panel/left']
+            }
+        });
+        right_button = Button({
+            x: panel_x - imageAssets['./assets/panel/left'].width * interface_scale * 0.53,
+            y: panel_y + imageAssets['./assets/panel/left'].height * interface_scale * 0.48,
+            anchor: {x: 0.5, y: 0.5},
+            scaleX: interface_scale,
+            scaleY: interface_scale,
+            image: imageAssets['./assets/panel/right'],
+
+            // pointer events
+            onDown() {
+                this.image = imageAssets['./assets/panel/right_press'];
+                engineControl("right");
+            },
+            onUp() {
+                this.image = imageAssets['./assets/panel/right']
+            }
+        });
+        thrust_button = Button({
+            x: panel_x + imageAssets['./assets/panel/left'].width * interface_scale * 0.53,
+            y: panel_y - imageAssets['./assets/panel/left'].height * interface_scale * 0.8,
+            anchor: {x: 0.5, y: 0.5},
+            scaleX: interface_scale,
+            scaleY: interface_scale,
+            image: imageAssets['./assets/panel/thrust'],
+
+            // pointer events
+            onDown() {
+                this.image = imageAssets['./assets/panel/thrust_press'];
+                engineControl("up");
+            },
+            onUp() {
+                this.image = imageAssets['./assets/panel/thrust']
+            }
+        });
+        reverse_button = Button({
+            x: panel_x + imageAssets['./assets/panel/left'].width * interface_scale * 0.53,
+            y: panel_y + imageAssets['./assets/panel/left'].height * interface_scale * 0.48,
+            anchor: {x: 0.5, y: 0.5},
+            scaleX: interface_scale,
+            scaleY: interface_scale,
+            image: imageAssets['./assets/panel/reverse'],
+
+            // pointer events
+            onDown() {
+                this.image = imageAssets['./assets/panel/reverse_press'];
+                engineControl("down");
+            },
+            onUp() {
+                this.image = imageAssets['./assets/panel/reverse']
+            }
+        });
 
         loop.start();
     });
