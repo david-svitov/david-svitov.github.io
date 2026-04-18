@@ -45,8 +45,8 @@
 
     let ship_trail = [];
     let max_trail_length = 2000;
-    let ship_fuel = 200;
-    let ship_oxygen = 400;
+    let ship_fuel = 500;
+    let ship_oxygen = 2000;
     let max_ship_speed = 7;
 
     // sqrt(G * M / r) - to calculate orbital speed
@@ -128,11 +128,12 @@
         color: 'white',
         strokeColor: 'black',
         lineWidth: 4,
-        x: 20,
-        y: 20,
+        x: screen_size * 0.05,
+        y: canvas.height - screen_size * 0.1,
         textAlign: 'left'
     });
 
+    let panel_screen;
     let panel_buttons;
     let left_button;
     let right_button;
@@ -391,12 +392,14 @@
                 planets[i].render();
             }
 
-            ship_hud.render();
+            if (panel_screen) panel_screen.render();
             if (panel_buttons) panel_buttons.render();
             if (left_button) left_button.render();
             if (right_button) right_button.render();
             if (thrust_button) thrust_button.render();
             if (reverse_button) reverse_button.render();
+
+            ship_hud.render();
         }
     });
 
@@ -405,15 +408,16 @@
     for (let i = 0; i < planets_properties.length; ++i) {
         image_files.push(planets_properties[i]["path"]);
     }
-    image_files.push("./assets/panel/panel.png")
-    image_files.push("./assets/panel/left.png")
-    image_files.push("./assets/panel/left_press.png")
-    image_files.push("./assets/panel/right.png")
-    image_files.push("./assets/panel/right_press.png")
-    image_files.push("./assets/panel/thrust.png")
-    image_files.push("./assets/panel/thrust_press.png")
-    image_files.push("./assets/panel/reverse.png")
-    image_files.push("./assets/panel/reverse_press.png")
+    image_files.push("./assets/panel/panel_screen.png");
+    image_files.push("./assets/panel/panel.png");
+    image_files.push("./assets/panel/left.png");
+    image_files.push("./assets/panel/left_press.png");
+    image_files.push("./assets/panel/right.png");
+    image_files.push("./assets/panel/right_press.png");
+    image_files.push("./assets/panel/thrust.png");
+    image_files.push("./assets/panel/thrust_press.png");
+    image_files.push("./assets/panel/reverse.png");
+    image_files.push("./assets/panel/reverse_press.png");
     load(...image_files).then((assets) => {
         for (let i = 0; i < planets_properties.length; i++) {
             let image = assets[i];
@@ -438,7 +442,7 @@
         let panel_height = imageAssets['./assets/panel/panel'].height;
         let panel_width = imageAssets['./assets/panel/panel'].width;
         let interface_scale = screen_size / panel_width * 0.2;
-        let panel_x = canvas.width / 2;
+        let panel_x = canvas.width - panel_width * interface_scale / 2;
         let panel_y = canvas.height - panel_height * interface_scale / 2;
         panel_buttons = Sprite({
             x: panel_x,
@@ -448,6 +452,28 @@
             anchor: {x: 0.5, y: 0.5},
             image: imageAssets['./assets/panel/panel']
         });
+
+        panel_screen = Sprite({
+            x: 0,
+            y: panel_y,
+            scaleX: interface_scale,
+            scaleY: interface_scale,
+            anchor: {x: 0, y: 0.5},
+            image: imageAssets['./assets/panel/panel_screen']
+        });
+
+        // Adjust hub position and font
+        let screenW = panel_screen.image.width * panel_screen.scaleX;
+        let screenH = panel_screen.image.height * panel_screen.scaleY;
+        let left = panel_screen.x - screenW * panel_screen.anchor.x;
+        let top = panel_screen.y - screenH * panel_screen.anchor.y;
+        let padX = screenW * 0.15;
+        let padY = screenH * 0.2;
+
+        let fontSize = Math.max(6, Math.floor(Math.min(screenW, screenH) * 0.07));
+        ship_hud.x = left + padX;
+        ship_hud.y = top + padY;
+        ship_hud.font = `${fontSize}px Arial`;
 
         // Set buttons
         left_button = Button({
