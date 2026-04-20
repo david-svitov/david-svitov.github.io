@@ -185,6 +185,8 @@
     let ship_fuel = 500;
     let ship_oxygen = 2000;
     let max_ship_speed = 7;
+    let mission_stage = 0;
+    let on_orbit_count = 0;
 
     function calculateVelocity(central_M, central_position, planet_position) {
         let eps = 8;
@@ -228,6 +230,12 @@
         );
     }
 
+    function distance(v1, v2) {
+        let dx = v1.x - v2.x;
+        let dy = v1.y - v2.y;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
     function velocityAngleDeg(v) {
         let angle = Math.atan2(v.y, v.x) * 180 / Math.PI;
         if (angle < 0) angle += 360;
@@ -256,6 +264,15 @@
         }
     }
 
+    function polarToScreen(center, radius, angle_deg) {
+        let angle_rad = angle_deg * Math.PI / 180;
+
+        return Vector(
+            center.x + radius * Math.cos(angle_rad),
+            center.y + radius * Math.sin(angle_rad)
+        );
+    }
+
     let ship_hud = Text({
         text: '',
         font: '18px Arial',
@@ -267,6 +284,18 @@
         textAlign: 'left'
     });
 
+    let mission_status = Text({
+        text: 'Reach the Mars',
+        font: '18px Arial',
+        color: 'white',
+        strokeColor: 'black',
+        lineWidth: 4,
+        x: canvas.width / 2,
+        y: screen_size * 0.1,
+        textAlign: 'left'
+    });
+
+    let panel_status;
     let panel_screen;
     let panel_buttons;
     let left_button;
@@ -275,11 +304,14 @@
     let reverse_button;
     let fly_direction_flag = "none";
 
+    let sun_position = Vector(canvas.width / 2, canvas.height / 2);
+    let earth_position = polarToScreen(sun_position, screen_size * 0.15, 110);
+
     let planets = [];
     let planets_properties = [
         {
             path: "assets/mercury.png",
-            position: Vector(canvas.width / 2 + screen_size * 0.05, canvas.height / 2),
+            position: polarToScreen(sun_position, screen_size * 0.05, 330),
             area: screen_size * 0.004,
             mass: 4,
             rotation_speed: 0.001,
@@ -288,7 +320,7 @@
         },
         {
             path: "assets/venus.png",
-            position: Vector(canvas.width / 2 + screen_size * 0.1, canvas.height / 2),
+            position: polarToScreen(sun_position, screen_size * 0.10, 35),
             area: screen_size * 0.010,
             mass: 30,
             rotation_speed: 0.001,
@@ -297,7 +329,7 @@
         },
         {
             path: "assets/earth.png",
-            position: Vector(canvas.width / 2 + screen_size * 0.15, canvas.height / 2),
+            position: earth_position,
             area: screen_size * 0.012,
             mass: 40,
             rotation_speed: 0.001,
@@ -306,7 +338,7 @@
         },
         {
             path: "assets/moon.png",
-            position: Vector(canvas.width / 2 + screen_size * 0.14, canvas.height / 2),
+            position: polarToScreen(earth_position, screen_size * 0.012, 40),
             area: screen_size * 0.003,
             mass: 0.01,
             rotation_speed: 0.001,
@@ -315,7 +347,7 @@
         },
         {
             path: "assets/mars.png",
-            position: Vector(canvas.width / 2 + screen_size * 0.2, canvas.height / 2),
+            position: polarToScreen(sun_position, screen_size * 0.25, 135),
             area: screen_size * 0.006,
             mass: 10,
             rotation_speed: 0.001,
@@ -324,7 +356,7 @@
         },
         {
             path: "assets/sun.png",
-            position: Vector(canvas.width / 2, canvas.height / 2),
+            position: sun_position,
             area: screen_size * 0.05,
             mass: 4000,
             rotation_speed: 0.0001,
@@ -447,6 +479,7 @@
 
     let loop = GameLoop({
         update() {
+            // Ship control
             if (fly_direction_flag != "none") {
                 engineControl(fly_direction_flag);
             } else {
@@ -461,9 +494,56 @@
                     engineControl("down");
                 }
             }
-
             if (ship_oxygen > 0) ship_oxygen -= 0.05;
 
+            // Game status update
+            let mars_orbit = screen_size * 0.01;
+            let earth_orbit = screen_size * 0.024;
+            switch (mission_stage) {
+                case 0:
+                    if (distance(planets[planet_indices.ship], planets[planet_indices.mars]) < mars_orbit) {
+                        on_orbit_count = 0;
+                        mission_stage += 1;
+                    }
+                    break;
+                case 1:
+                    mission_status.text = `Keep the orbit: ${(10 - on_orbit_count).toFixed(1)}`;
+                    if (distance(planets[planet_indices.ship], planets[planet_indices.mars]) < mars_orbit) {
+                        on_orbit_count += 0.01;
+                        if (on_orbit_count > 10) {
+                            mission_status.text = "Return home";
+                            mission_stage += 1;
+                        }
+                    } else {
+                        mission_status.text = "Reach the Mars";
+                        on_orbit_count = 0;
+                        mission_stage -= 1;
+                    }
+                    break;
+                case 2:
+                    if (distance(planets[planet_indices.ship], planets[planet_indices.earth]) < earth_orbit) {
+                        on_orbit_count = 0;
+                        mission_stage += 1;
+                    }
+                    break;
+                case 3:
+                    mission_status.text = `Keep the orbit: ${(10 - on_orbit_count).toFixed(1)}`;
+                    if (distance(planets[planet_indices.ship], planets[planet_indices.earth]) < earth_orbit) {
+                        on_orbit_count += 0.01;
+                        if (on_orbit_count > 10) {
+                            mission_status.text = "You did it!";
+                            mission_stage += 1;
+                        }
+                    } else {
+                        mission_status.text = "Return home";
+                        on_orbit_count = 0;
+                        mission_stage -= 1;
+                    }
+                    break;
+            }
+
+
+            // Planets positions update
             for (let step = 0; step < 5; step++) {
                 let updated_positions = [];
                 for (let i = 0; i < planets.length; i++) {
@@ -521,6 +601,7 @@
                 planets[i].render();
             }
 
+            if (panel_status) panel_status.render();
             if (panel_screen) panel_screen.render();
             if (panel_buttons) panel_buttons.render();
             if (left_button) left_button.render();
@@ -529,6 +610,7 @@
             if (reverse_button) reverse_button.render();
 
             ship_hud.render();
+            mission_status.render();
         }
     });
 
@@ -536,6 +618,7 @@
     for (let i = 0; i < planets_properties.length; ++i) {
         image_files.push(planets_properties[i]["path"]);
     }
+    image_files.push("./assets/panel/panel_status.png");
     image_files.push("./assets/panel/panel_screen.png");
     image_files.push("./assets/panel/panel.png");
     image_files.push("./assets/panel/left.png");
@@ -546,8 +629,6 @@
     image_files.push("./assets/panel/thrust_press.png");
     image_files.push("./assets/panel/reverse.png");
     image_files.push("./assets/panel/reverse_press.png");
-
-    loadingStatus.textContent = "Загрузка изображений и интерфейса...";
 
     load(...image_files).then((assets) => {
         for (let i = 0; i < planets_properties.length; i++) {
@@ -584,6 +665,26 @@
             image: imageAssets['./assets/panel/panel']
         });
 
+        panel_status = Sprite({
+            x: canvas.width / 2,
+            y: canvas.height - imageAssets['./assets/panel/panel_status'].height * interface_scale / 2,
+            scaleX: interface_scale,
+            scaleY: interface_scale,
+            anchor: {x: 0.5, y: 0.5},
+            image: imageAssets['./assets/panel/panel_status']
+        });
+        let screenW = panel_status.image.width * panel_status.scaleX;
+        let screenH = panel_status.image.height * panel_status.scaleY;
+        let left = panel_status.x - screenW * panel_status.anchor.x;
+        let top = panel_status.y - screenH * panel_status.anchor.y;
+        let padX = screenW * 0.2;
+        let padY = screenH * 0.4;
+
+        mission_status.x = left + padX;
+        mission_status.y = top + padY;
+        let fontSize = Math.max(6, Math.floor(Math.min(screenW, screenH) * 0.2));
+        mission_status.font = `${fontSize}px Arial`;
+
         panel_screen = Sprite({
             x: 0,
             y: panel_y,
@@ -592,17 +693,16 @@
             anchor: {x: 0, y: 0.5},
             image: imageAssets['./assets/panel/panel_screen']
         });
+        screenW = panel_screen.image.width * panel_screen.scaleX;
+        screenH = panel_screen.image.height * panel_screen.scaleY;
+        left = panel_screen.x - screenW * panel_screen.anchor.x;
+        top = panel_screen.y - screenH * panel_screen.anchor.y;
+        padX = screenW * 0.15;
+        padY = screenH * 0.2;
 
-        let screenW = panel_screen.image.width * panel_screen.scaleX;
-        let screenH = panel_screen.image.height * panel_screen.scaleY;
-        let left = panel_screen.x - screenW * panel_screen.anchor.x;
-        let top = panel_screen.y - screenH * panel_screen.anchor.y;
-        let padX = screenW * 0.15;
-        let padY = screenH * 0.2;
-
-        let fontSize = Math.max(6, Math.floor(Math.min(screenW, screenH) * 0.07));
         ship_hud.x = left + padX;
         ship_hud.y = top + padY;
+        fontSize = Math.max(6, Math.floor(Math.min(screenW, screenH) * 0.07));
         ship_hud.font = `${fontSize}px Arial`;
 
         left_button = Button({
