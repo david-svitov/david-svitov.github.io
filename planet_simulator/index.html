@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
   <title>Planet Simulator</title>
@@ -11,6 +11,7 @@
           height: 100%;
           overflow: hidden;
           background: #111;
+          font-family: Arial, sans-serif;
       }
 
       canvas {
@@ -18,9 +19,141 @@
           width: 100vw;
           height: 100vh;
       }
+
+      /* Loading screen */
+      #loadingOverlay {
+          position: fixed;
+          inset: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background:
+                  radial-gradient(circle at center, rgba(40, 55, 40, 0.18), rgba(0,0,0,0.88)),
+                  rgba(0, 0, 0, 0.88);
+          z-index: 9999;
+      }
+
+      #loadingCard {
+          width: min(92vw, 620px);
+          padding: 34px 30px 26px;
+          border-radius: 14px;
+          background:
+                  linear-gradient(180deg, #6d6f64 0%, #505248 100%);
+          border: 2px solid #2e302b;
+          box-shadow:
+                  inset 0 2px 0 rgba(255,255,255,0.12),
+                  inset 0 -3px 0 rgba(0,0,0,0.28),
+                  0 20px 50px rgba(0,0,0,0.55);
+          color: #efe6c8;
+          text-align: center;
+          position: relative;
+      }
+
+      #loadingCard::before {
+          content: "";
+          position: absolute;
+          inset: 10px;
+          border: 1px solid rgba(255, 230, 170, 0.12);
+          border-radius: 8px;
+          pointer-events: none;
+      }
+
+      #loadingCard h1 {
+          margin: 0 0 18px;
+          font-size: 34px;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          color: #f2dfad;
+          text-shadow: 0 1px 0 #2f312c;
+      }
+
+      #loadingCard p {
+          margin: 0 0 14px;
+          line-height: 1.55;
+          font-size: 17px;
+          color: #e6ddb9;
+      }
+
+      #loadingStatus {
+          margin-top: 18px;
+          padding: 10px 14px;
+          font-size: 14px;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          color: #b9f3b2;
+          background: #1d2a1d;
+          border: 1px solid #435642;
+          border-radius: 6px;
+          box-shadow: inset 0 0 12px rgba(120, 255, 120, 0.08);
+          min-height: 20px;
+      }
+
+      #startButton {
+          margin-top: 24px;
+          width: 100%;
+          padding: 16px 20px;
+          font-size: 24px;
+          font-weight: 700;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          color: #5a4732;
+
+          background:
+                  linear-gradient(180deg, #f0e1ba 0%, #dec89a 45%, #d2b885 100%);
+          border: 1px solid #a88d5f;
+          border-radius: 16px;
+
+          box-shadow:
+                  inset 0 3px 8px rgba(255,255,255,0.45),
+                  inset 0 -6px 10px rgba(120, 90, 40, 0.18),
+                  0 6px 0 #8f7650,
+                  0 10px 20px rgba(0,0,0,0.35);
+
+          cursor: pointer;
+          transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.15s ease;
+          display: none;
+      }
+
+      #startButton:hover {
+          filter: brightness(1.03);
+      }
+
+      #startButton:active {
+          transform: translateY(4px);
+          box-shadow:
+                  inset 0 2px 6px rgba(255,255,255,0.35),
+                  inset 0 -4px 8px rgba(120, 90, 40, 0.18),
+                  0 2px 0 #8f7650,
+                  0 5px 12px rgba(0,0,0,0.28);
+      }
+
+      #startButton:disabled {
+          opacity: 0.6;
+          cursor: default;
+          transform: none;
+      }
+
+      .hidden {
+          display: none !important;
+      }
   </style>
 </head>
 <body>
+
+<div id="loadingOverlay">
+  <div id="loadingCard">
+    <h1>Mission "Zander"</h1>
+    <p>
+      You are an astronaut on a mission to reach Mars and return home safely. You have limited fuel and oxygen reserves to complete this journey.
+    </p>
+    <p>
+      Use the on-screen control panel or the arrow keys on your keyboard to guide your spaceship.
+    </p>
+
+    <div id="loadingStatus">Spacecraft preparation...</div>
+    <button id="startButton">Ignition</button>
+  </div>
+</div>
 
 <canvas id="game"></canvas>
 
@@ -31,6 +164,10 @@
     initPointer();
     initKeys();
 
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const loadingStatus = document.getElementById('loadingStatus');
+    const startButton = document.getElementById('startButton');
+
     function resizeCanvas() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
@@ -40,7 +177,7 @@
 
     let screen_size = Math.max(canvas.width, canvas.height);
 
-    let G = 1.0; //6.674;
+    let G = 1.0;
     let dt = 0.01;
 
     let ship_trail = [];
@@ -49,7 +186,6 @@
     let ship_oxygen = 2000;
     let max_ship_speed = 7;
 
-    // sqrt(G * M / r) - to calculate orbital speed
     function calculateVelocity(central_M, central_position, planet_position) {
         let eps = 8;
         let r = Vector(planet_position.x - central_position.x, planet_position.y - central_position.y);
@@ -75,7 +211,6 @@
             let d2 = r.x * r.x + r.y * r.y + eps * eps;
             let d3 = d2 * Math.sqrt(d2);
 
-            // a_j = G * m_j * r / d**3 - we calculate acceleration directly based on the Newton's law of universal gravitation
             let factor = G * planets_properties[j].mass / d3;
             acceleration = acceleration.add(r.scale(factor));
         }
@@ -107,9 +242,9 @@
 
             let t = i / (trail.length - 1);
 
-            let r = Math.round(160 + 95 * t);   // 160 -> 255
-            let g = Math.round(160 + 95 * t);   // 160 -> 255
-            let b = Math.round(160 - 160 * t);  // 160 -> 0
+            let r = Math.round(160 + 95 * t);
+            let g = Math.round(160 + 95 * t);
+            let b = Math.round(160 - 160 * t);
 
             let alpha = 0.05 + 0.95 * t;
             ctx.beginPath();
@@ -121,7 +256,6 @@
         }
     }
 
-    // Ship info hud
     let ship_hud = Text({
         text: '',
         font: '18px Arial',
@@ -139,6 +273,7 @@
     let right_button;
     let thrust_button;
     let reverse_button;
+    let fly_direction_flag = "none";
 
     let planets = [];
     let planets_properties = [
@@ -208,16 +343,15 @@
     ];
 
     let planet_indices = {
-        "mercury": 0,
-        "venus": 1,
-        "earth": 2,
-        "moon": 3,
-        "mars": 4,
-        "sun": 5,
-        "ship": 6,
+        mercury: 0,
+        venus: 1,
+        earth: 2,
+        moon: 3,
+        mars: 4,
+        sun: 5,
+        ship: 6,
     };
 
-    // Calculate planets speed
     planets_properties[planet_indices.mercury].velocity = calculateVelocity(
         planets_properties[planet_indices.sun].mass,
         planets_properties[planet_indices.sun].position,
@@ -251,7 +385,6 @@
         planets_properties[planet_indices.mars].position
     );
 
-    // Ship positioning next to Earth
     let earth = planets_properties[planet_indices.earth];
     let shipOrbitRadius = canvas.width * 0.01;
 
@@ -260,7 +393,6 @@
         earth.position.y
     );
 
-    // Ship speed
     planets_properties[planet_indices.ship].velocity =
         planets_properties[planet_indices.earth].velocity.add(
             calculateVelocity(
@@ -293,15 +425,15 @@
         let ship = planets_properties[planet_indices.ship];
         if (ship_fuel > 0 && ship_oxygen > 0) {
             if (direction === "left") {
-                ship.velocity = rotateVector(ship.velocity, -0.03);
+                ship.velocity = rotateVector(ship.velocity, -0.01);
                 ship_fuel -= 1;
             } else if (direction === "right") {
-                ship.velocity = rotateVector(ship.velocity, 0.03);
+                ship.velocity = rotateVector(ship.velocity, 0.01);
                 ship_fuel -= 1;
             }
 
             if (direction === "up") {
-                if (ship.velocity.length() < max_ship_speed) { // Limit ship speed to some magic number
+                if (ship.velocity.length() < max_ship_speed) {
                     ship.velocity = ship.velocity.scale(1.01);
                     ship_fuel -= 1;
                 }
@@ -313,25 +445,26 @@
         if (ship_fuel < 0) ship_fuel = 0;
     }
 
-    // Game loop
     let loop = GameLoop({
         update() {
-            // key events
-            if (keyPressed('arrowleft')) {
-                engineControl("left");
-            } else if (keyPressed('arrowright')) {
-                engineControl("right");
-            }
-            if (keyPressed('arrowup')) {
-                engineControl("up");
-            } else if (keyPressed('arrowdown')) {
-                engineControl("down");
+            if (fly_direction_flag != "none") {
+                engineControl(fly_direction_flag);
+            } else {
+                if (keyPressed('arrowleft')) {
+                    engineControl("left");
+                } else if (keyPressed('arrowright')) {
+                    engineControl("right");
+                }
+                if (keyPressed('arrowup')) {
+                    engineControl("up");
+                } else if (keyPressed('arrowdown')) {
+                    engineControl("down");
+                }
             }
 
             if (ship_oxygen > 0) ship_oxygen -= 0.05;
 
-            for (let step = 0; step < 5; step++) { // skip some frames to accelerate rendering
-                // Update positions with Verlet
+            for (let step = 0; step < 5; step++) {
                 let updated_positions = [];
                 for (let i = 0; i < planets.length; i++) {
                     let velocity = planets_properties[i].velocity;
@@ -340,24 +473,21 @@
                         planets[i].x + velocity.x * dt + 0.5 * acceleration.x * dt * dt,
                         planets[i].y + velocity.y * dt + 0.5 * acceleration.y * dt * dt
                     );
-                    updated_positions.push(new_pos); // Store new position to update it later
+                    updated_positions.push(new_pos);
                 }
 
-                // Update all positions and rotations
                 for (let i = 0; i < updated_positions.length; i++) {
                     planets[i].x = updated_positions[i].x;
                     planets[i].y = updated_positions[i].y;
                     planets[i].rotation += planets_properties[i].rotation_speed;
                 }
 
-                // Calculate new velocity and acceleration
                 let positions = planets.map(p => Vector(p.x, p.y));
                 for (let i = 0; i < planets.length; i++) {
                     let velocity = planets_properties[i].velocity;
                     let old_acceleration = planets_properties[i].acceleration;
                     let new_acceleration = computeAcceleration(i, positions);
 
-                    // update velocity and acceleration
                     planets_properties[i].velocity = Vector(
                         velocity.x + 0.5 * (old_acceleration.x + new_acceleration.x) * dt,
                         velocity.y + 0.5 * (old_acceleration.y + new_acceleration.y) * dt
@@ -366,12 +496,11 @@
                 }
             }
 
-            // Update ship trail
             ship_trail.push({ x: planets[planet_indices.ship].x, y: planets[planet_indices.ship].y });
             if (ship_trail.length > max_trail_length) {
                 ship_trail.shift();
             }
-            // Update ship info
+
             let ship = planets_properties[planet_indices.ship];
             let speed = ship.velocity.length();
             let angle = velocityAngleDeg(ship.velocity);
@@ -403,7 +532,6 @@
         }
     });
 
-    // Load images for all planets and start the game loop
     let image_files = [];
     for (let i = 0; i < planets_properties.length; ++i) {
         image_files.push(planets_properties[i]["path"]);
@@ -418,11 +546,14 @@
     image_files.push("./assets/panel/thrust_press.png");
     image_files.push("./assets/panel/reverse.png");
     image_files.push("./assets/panel/reverse_press.png");
+
+    loadingStatus.textContent = "Загрузка изображений и интерфейса...";
+
     load(...image_files).then((assets) => {
         for (let i = 0; i < planets_properties.length; i++) {
             let image = assets[i];
 
-            planet_sprite = Sprite({
+            let planet_sprite = Sprite({
                 x: planets_properties[i]["position"].x,
                 y: planets_properties[i]["position"].y,
                 scaleX: planets_properties[i]["area"] / image.width,
@@ -433,7 +564,6 @@
             planets.push(planet_sprite);
         }
 
-        // Initialize acceleration
         let positions = planets.map(p => Vector(p.x, p.y));
         for (let i = 0; i < planets.length; i++) {
             planets_properties[i].acceleration = computeAcceleration(i, positions);
@@ -444,6 +574,7 @@
         let interface_scale = screen_size / panel_width * 0.2;
         let panel_x = canvas.width - panel_width * interface_scale / 2;
         let panel_y = canvas.height - panel_height * interface_scale / 2;
+
         panel_buttons = Sprite({
             x: panel_x,
             y: panel_y,
@@ -462,7 +593,6 @@
             image: imageAssets['./assets/panel/panel_screen']
         });
 
-        // Adjust hub position and font
         let screenW = panel_screen.image.width * panel_screen.scaleX;
         let screenH = panel_screen.image.height * panel_screen.scaleY;
         let left = panel_screen.x - screenW * panel_screen.anchor.x;
@@ -475,7 +605,6 @@
         ship_hud.y = top + padY;
         ship_hud.font = `${fontSize}px Arial`;
 
-        // Set buttons
         left_button = Button({
             x: panel_x - imageAssets['./assets/panel/left'].width * interface_scale * 0.53,
             y: panel_y - imageAssets['./assets/panel/left'].height * interface_scale * 0.8,
@@ -483,16 +612,16 @@
             scaleX: interface_scale,
             scaleY: interface_scale,
             image: imageAssets['./assets/panel/left'],
-
-            // pointer events
             onDown() {
                 this.image = imageAssets['./assets/panel/left_press'];
-                engineControl("left");
+                fly_direction_flag = "left";
             },
             onUp() {
-                this.image = imageAssets['./assets/panel/left']
+                this.image = imageAssets['./assets/panel/left'];
+                fly_direction_flag = "none";
             }
         });
+
         right_button = Button({
             x: panel_x - imageAssets['./assets/panel/left'].width * interface_scale * 0.53,
             y: panel_y + imageAssets['./assets/panel/left'].height * interface_scale * 0.48,
@@ -500,16 +629,16 @@
             scaleX: interface_scale,
             scaleY: interface_scale,
             image: imageAssets['./assets/panel/right'],
-
-            // pointer events
             onDown() {
                 this.image = imageAssets['./assets/panel/right_press'];
-                engineControl("right");
+                fly_direction_flag = "right";
             },
             onUp() {
-                this.image = imageAssets['./assets/panel/right']
+                this.image = imageAssets['./assets/panel/right'];
+                fly_direction_flag = "none";
             }
         });
+
         thrust_button = Button({
             x: panel_x + imageAssets['./assets/panel/left'].width * interface_scale * 0.53,
             y: panel_y - imageAssets['./assets/panel/left'].height * interface_scale * 0.8,
@@ -517,16 +646,16 @@
             scaleX: interface_scale,
             scaleY: interface_scale,
             image: imageAssets['./assets/panel/thrust'],
-
-            // pointer events
             onDown() {
                 this.image = imageAssets['./assets/panel/thrust_press'];
-                engineControl("up");
+                fly_direction_flag = "up";
             },
             onUp() {
-                this.image = imageAssets['./assets/panel/thrust']
+                this.image = imageAssets['./assets/panel/thrust'];
+                fly_direction_flag = "none";
             }
         });
+
         reverse_button = Button({
             x: panel_x + imageAssets['./assets/panel/left'].width * interface_scale * 0.53,
             y: panel_y + imageAssets['./assets/panel/left'].height * interface_scale * 0.48,
@@ -534,18 +663,26 @@
             scaleX: interface_scale,
             scaleY: interface_scale,
             image: imageAssets['./assets/panel/reverse'],
-
-            // pointer events
             onDown() {
                 this.image = imageAssets['./assets/panel/reverse_press'];
-                engineControl("down");
+                fly_direction_flag = "down";
             },
             onUp() {
-                this.image = imageAssets['./assets/panel/reverse']
+                this.image = imageAssets['./assets/panel/reverse'];
+                fly_direction_flag = "none";
             }
         });
 
-        loop.start();
+        loadingStatus.textContent = "Pre-flight procedures completed.";
+        startButton.style.display = 'block';
+
+        startButton.addEventListener('click', () => {
+            loadingOverlay.classList.add('hidden');
+            loop.start();
+        }, { once: true });
+    }).catch((err) => {
+        console.error(err);
+        loadingStatus.textContent = "Ошибка загрузки ресурсов.";
     });
 </script>
 
