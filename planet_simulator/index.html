@@ -666,11 +666,11 @@
         });
 
         panel_status = Sprite({
-            x: canvas.width / 2,
-            y: canvas.height - imageAssets['./assets/panel/panel_status'].height * interface_scale / 2,
+            x: 0,
+            y: panel_y - imageAssets['./assets/panel/panel_status'].height * interface_scale * 2,
             scaleX: interface_scale,
             scaleY: interface_scale,
-            anchor: {x: 0.5, y: 0.5},
+            anchor: {x: 0, y: 0},
             image: imageAssets['./assets/panel/panel_status']
         });
         let screenW = panel_status.image.width * panel_status.scaleX;
