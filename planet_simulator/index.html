@@ -182,11 +182,31 @@
 
     let ship_trail = [];
     let max_trail_length = 2000;
-    let ship_fuel = 500;
-    let ship_oxygen = 2000;
+    let max_ship_fuel = 500;
+    let ship_fuel = max_ship_fuel;
+    let max_ship_oxygen = 500;
+    let ship_oxygen = max_ship_oxygen;
     let max_ship_speed = 7;
     let mission_stage = 0;
     let on_orbit_count = 0;
+
+    let max_bar_width = 0;
+    let fuel_bar = Sprite({
+        x: 300,
+        y: 100,
+        anchor: {x: 0.0, y: 0.5},
+        width: 20,
+        height: 40,
+        color: 'red'
+    });
+    let oxygen_bar = Sprite({
+        x: 300,
+        y: 200,
+        anchor: {x: 0.0, y: 0.5},
+        width: 20,
+        height: 40,
+        color: 'blue'
+    });
 
     function calculateVelocity(central_M, central_position, planet_position) {
         let eps = 8;
@@ -273,6 +293,27 @@
         );
     }
 
+    let ship_fuel_text = Text({
+        text: '',
+        font: '18px Arial',
+        color: 'white',
+        strokeColor: 'black',
+        lineWidth: 4,
+        x: screen_size * 0.05,
+        y: canvas.height - screen_size * 0.1,
+        textAlign: 'left'
+    });
+    let ship_oxygen_text = Text({
+        text: '',
+        font: '18px Arial',
+        color: 'white',
+        strokeColor: 'black',
+        lineWidth: 4,
+        x: screen_size * 0.05,
+        y: canvas.height - screen_size * 0.1,
+        textAlign: 'left'
+    });
+
     let ship_hud = Text({
         text: '',
         font: '18px Arial',
@@ -285,7 +326,7 @@
     });
 
     let mission_status = Text({
-        text: 'Reach the Mars',
+        text: 'Reach Mars',
         font: '18px Arial',
         color: 'white',
         strokeColor: 'black',
@@ -295,6 +336,7 @@
         textAlign: 'left'
     });
 
+    let ship_orientation;
     let panel_status;
     let panel_screen;
     let panel_buttons;
@@ -515,7 +557,7 @@
                             mission_stage += 1;
                         }
                     } else {
-                        mission_status.text = "Reach the Mars";
+                        mission_status.text = "Reach Mars";
                         on_orbit_count = 0;
                         mission_stage -= 1;
                     }
@@ -584,13 +626,15 @@
             let ship = planets_properties[planet_indices.ship];
             let speed = ship.velocity.length();
             let angle = velocityAngleDeg(ship.velocity);
-            let oxygen_postfix = "";
-            if (ship_oxygen <= 0.01) oxygen_postfix = "  --- The crew is dead";
             ship_hud.text =
-                `Ship speed: ${speed.toFixed(3)} km/h\n` +
-                `Direction: ${angle.toFixed(1)}°\n\n` +
-                `Ship fuel: ${ship_fuel} liters\n` +
-                `Oxygen: ${ship_oxygen.toFixed(3)} m^3` + oxygen_postfix;
+                `Speed: ${speed.toFixed(3)} km/s\n` +
+                `Direction: ${angle.toFixed(1)}°\n`;
+            ship_fuel_text.text = `FUEL: ${ship_fuel} liters`;
+            ship_oxygen_text.text = `O2: ${ship_oxygen.toFixed(3)} m^3`;
+
+            fuel_bar.width = max_bar_width * (ship_fuel / max_ship_fuel);
+            oxygen_bar.width = max_bar_width * (ship_oxygen / max_ship_oxygen);
+            ship_orientation.rotation = angle * Math.PI / 180;
         },
 
         render() {
@@ -608,9 +652,14 @@
             if (right_button) right_button.render();
             if (thrust_button) thrust_button.render();
             if (reverse_button) reverse_button.render();
+            if (ship_orientation) ship_orientation.render();
 
             ship_hud.render();
             mission_status.render();
+            fuel_bar.render();
+            oxygen_bar.render();
+            ship_fuel_text.render();
+            ship_oxygen_text.render();
         }
     });
 
@@ -619,7 +668,7 @@
         image_files.push(planets_properties[i]["path"]);
     }
     image_files.push("./assets/panel/panel_status.png");
-    image_files.push("./assets/panel/panel_screen.png");
+    image_files.push("./assets/panel/panel_screen_bars.png");
     image_files.push("./assets/panel/panel.png");
     image_files.push("./assets/panel/left.png");
     image_files.push("./assets/panel/left_press.png");
@@ -629,6 +678,7 @@
     image_files.push("./assets/panel/thrust_press.png");
     image_files.push("./assets/panel/reverse.png");
     image_files.push("./assets/panel/reverse_press.png");
+    image_files.push("./assets/panel/ship.png");
 
     load(...image_files).then((assets) => {
         for (let i = 0; i < planets_properties.length; i++) {
@@ -677,11 +727,9 @@
         let screenH = panel_status.image.height * panel_status.scaleY;
         let left = panel_status.x - screenW * panel_status.anchor.x;
         let top = panel_status.y - screenH * panel_status.anchor.y;
-        let padX = screenW * 0.2;
-        let padY = screenH * 0.4;
 
-        mission_status.x = left + padX;
-        mission_status.y = top + padY;
+        mission_status.x = left + screenW * 0.2;
+        mission_status.y = top + screenH * 0.4;
         let fontSize = Math.max(6, Math.floor(Math.min(screenW, screenH) * 0.2));
         mission_status.font = `${fontSize}px Arial`;
 
@@ -691,19 +739,45 @@
             scaleX: interface_scale,
             scaleY: interface_scale,
             anchor: {x: 0, y: 0.5},
-            image: imageAssets['./assets/panel/panel_screen']
+            image: imageAssets['./assets/panel/panel_screen_bars']
         });
         screenW = panel_screen.image.width * panel_screen.scaleX;
         screenH = panel_screen.image.height * panel_screen.scaleY;
         left = panel_screen.x - screenW * panel_screen.anchor.x;
         top = panel_screen.y - screenH * panel_screen.anchor.y;
-        padX = screenW * 0.15;
-        padY = screenH * 0.2;
 
-        ship_hud.x = left + padX;
-        ship_hud.y = top + padY;
+        ship_orientation = Sprite({
+            x: left + screenW * 0.7,
+            y: top + screenH * 0.37,
+            scaleX: interface_scale * 0.35,
+            scaleY: interface_scale * 0.35,
+            anchor: {x: 0.5, y: 0.5},
+            image: imageAssets['./assets/panel/ship']
+        });
+
+        ship_hud.x = left + screenW * 0.15;
+        ship_hud.y = top + screenH * 0.2;
         fontSize = Math.max(6, Math.floor(Math.min(screenW, screenH) * 0.07));
         ship_hud.font = `${fontSize}px Arial`;
+
+        ship_fuel_text.x = left + screenW * 0.33;
+        ship_fuel_text.y = top + screenH * 0.66;
+        ship_fuel_text.font = `${fontSize}px Arial`;
+
+        ship_oxygen_text.x = left + screenW * 0.3;
+        ship_oxygen_text.y = top + screenH * 0.79;
+        ship_oxygen_text.font = `${fontSize}px Arial`;
+
+        max_bar_width = screenW * 0.8;
+        fuel_bar.x = left + screenW * 0.10;
+        fuel_bar.y = top + screenH * 0.69;
+        fuel_bar.height = screenH * 0.06;
+        fuel_bar.width = max_bar_width;
+
+        oxygen_bar.x = left + screenW * 0.10;
+        oxygen_bar.y = top + screenH * 0.82;
+        oxygen_bar.height = screenH * 0.06;
+        oxygen_bar.width = max_bar_width;
 
         left_button = Button({
             x: panel_x - imageAssets['./assets/panel/left'].width * interface_scale * 0.53,
