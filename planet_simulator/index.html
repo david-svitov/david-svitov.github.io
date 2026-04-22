@@ -336,6 +336,7 @@
         textAlign: 'left'
     });
 
+    let target_sprite;
     let ship_orientation;
     let panel_status;
     let panel_screen;
@@ -543,12 +544,20 @@
             let earth_orbit = screen_size * 0.024;
             switch (mission_stage) {
                 case 0:
+                    target_sprite.x = planets[planet_indices.mars].x;
+                    target_sprite.y = planets[planet_indices.mars].y;
+                    target_sprite.rotation += 0.01;
+
                     if (distance(planets[planet_indices.ship], planets[planet_indices.mars]) < mars_orbit) {
                         on_orbit_count = 0;
                         mission_stage += 1;
                     }
                     break;
                 case 1:
+                    target_sprite.x = planets[planet_indices.mars].x;
+                    target_sprite.y = planets[planet_indices.mars].y;
+                    target_sprite.rotation -= 0.03;
+
                     mission_status.text = `Keep the orbit: ${(10 - on_orbit_count).toFixed(1)}`;
                     if (distance(planets[planet_indices.ship], planets[planet_indices.mars]) < mars_orbit) {
                         on_orbit_count += 0.01;
@@ -563,12 +572,20 @@
                     }
                     break;
                 case 2:
+                    target_sprite.x = planets[planet_indices.earth].x;
+                    target_sprite.y = planets[planet_indices.earth].y;
+                    target_sprite.rotation += 0.01;
+
                     if (distance(planets[planet_indices.ship], planets[planet_indices.earth]) < earth_orbit) {
                         on_orbit_count = 0;
                         mission_stage += 1;
                     }
                     break;
                 case 3:
+                    target_sprite.x = planets[planet_indices.earth].x;
+                    target_sprite.y = planets[planet_indices.earth].y;
+                    target_sprite.rotation -= 0.03;
+
                     mission_status.text = `Keep the orbit: ${(10 - on_orbit_count).toFixed(1)}`;
                     if (distance(planets[planet_indices.ship], planets[planet_indices.earth]) < earth_orbit) {
                         on_orbit_count += 0.01;
@@ -627,10 +644,10 @@
             let speed = ship.velocity.length();
             let angle = velocityAngleDeg(ship.velocity);
             ship_hud.text =
-                `Speed: ${speed.toFixed(3)} km/s\n` +
+                `Speed: ${(speed * 1.5).toFixed(3)} km/s\n` + // 1.5 - is magic constant for realistic looking speed
                 `Direction: ${angle.toFixed(1)}°\n`;
             ship_fuel_text.text = `FUEL: ${ship_fuel} liters`;
-            ship_oxygen_text.text = `O2: ${ship_oxygen.toFixed(3)} m^3`;
+            ship_oxygen_text.text = `O2: ${ship_oxygen.toFixed(0)} m^3`;
 
             fuel_bar.width = max_bar_width * (ship_fuel / max_ship_fuel);
             oxygen_bar.width = max_bar_width * (ship_oxygen / max_ship_oxygen);
@@ -653,6 +670,7 @@
             if (thrust_button) thrust_button.render();
             if (reverse_button) reverse_button.render();
             if (ship_orientation) ship_orientation.render();
+            if (target_sprite) target_sprite.render();
 
             ship_hud.render();
             mission_status.render();
@@ -679,6 +697,7 @@
     image_files.push("./assets/panel/reverse.png");
     image_files.push("./assets/panel/reverse_press.png");
     image_files.push("./assets/panel/ship.png");
+    image_files.push("./assets/target.png");
 
     load(...image_files).then((assets) => {
         for (let i = 0; i < planets_properties.length; i++) {
@@ -699,6 +718,15 @@
         for (let i = 0; i < planets.length; i++) {
             planets_properties[i].acceleration = computeAcceleration(i, positions);
         }
+
+        target_sprite = Sprite({
+            x: planets[planet_indices.mars].x,
+            y: planets[planet_indices.mars].y,
+            scaleX: planets[planet_indices.mars].scaleX * 4,
+            scaleY: planets[planet_indices.mars].scaleY * 4,
+            anchor: {x: 0.5, y: 0.5},
+            image: imageAssets['./assets/target']
+        });
 
         let panel_height = imageAssets['./assets/panel/panel'].height;
         let panel_width = imageAssets['./assets/panel/panel'].width;
@@ -764,7 +792,7 @@
         ship_fuel_text.y = top + screenH * 0.66;
         ship_fuel_text.font = `${fontSize}px Arial`;
 
-        ship_oxygen_text.x = left + screenW * 0.3;
+        ship_oxygen_text.x = left + screenW * 0.35;
         ship_oxygen_text.y = top + screenH * 0.79;
         ship_oxygen_text.font = `${fontSize}px Arial`;
 
