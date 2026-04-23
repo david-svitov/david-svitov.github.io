@@ -133,6 +133,101 @@
           transform: none;
       }
 
+      #endingOverlay {
+          position: fixed;
+          inset: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background:
+                  radial-gradient(circle at center, rgba(40, 55, 40, 0.18), rgba(0,0,0,0.88)),
+                  rgba(0, 0, 0, 0.88);
+          z-index: 10000;
+      }
+
+      #endingCard {
+          width: min(92vw, 760px);
+          padding: 24px 24px 20px;
+          border-radius: 14px;
+          background: linear-gradient(180deg, #6d6f64 0%, #505248 100%);
+          border: 2px solid #2e302b;
+          box-shadow:
+                  inset 0 2px 0 rgba(255,255,255,0.12),
+                  inset 0 -3px 0 rgba(0,0,0,0.28),
+                  0 20px 50px rgba(0,0,0,0.55);
+          color: #efe6c8;
+          text-align: center;
+          position: relative;
+      }
+
+      #endingCard::before {
+          content: "";
+          position: absolute;
+          inset: 10px;
+          border: 1px solid rgba(255, 230, 170, 0.12);
+          border-radius: 8px;
+          pointer-events: none;
+      }
+
+      #endingImage {
+          display: block;
+          width: 100%;
+          max-height: 60vh;
+          object-fit: contain;
+          border-radius: 10px;
+          margin-bottom: 18px;
+          background: #111;
+      }
+
+      #endingInfo {
+          text-align: left;
+          margin-top: 8px;
+          padding: 10px 14px;
+          font-size: 18px;
+          line-height: 1.7;
+          color: #efe6c8;
+          background: rgba(0,0,0,0.18);
+          border-radius: 8px;
+      }
+
+      #retryButton {
+          margin-top: 20px;
+          width: 100%;
+          padding: 16px 20px;
+          font-size: 24px;
+          font-weight: 700;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          color: #5a4732;
+
+          background:
+                  linear-gradient(180deg, #f0e1ba 0%, #dec89a 45%, #d2b885 100%);
+          border: 1px solid #a88d5f;
+          border-radius: 16px;
+
+          box-shadow:
+                  inset 0 3px 8px rgba(255,255,255,0.45),
+                  inset 0 -6px 10px rgba(120, 90, 40, 0.18),
+                  0 6px 0 #8f7650,
+                  0 10px 20px rgba(0,0,0,0.35);
+
+          cursor: pointer;
+          transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.15s ease;
+      }
+
+      #retryButton:hover {
+          filter: brightness(1.03);
+      }
+
+      #retryButton:active {
+          transform: translateY(4px);
+          box-shadow:
+                  inset 0 2px 6px rgba(255,255,255,0.35),
+                  inset 0 -4px 8px rgba(120, 90, 40, 0.18),
+                  0 2px 0 #8f7650,
+                  0 5px 12px rgba(0,0,0,0.28);
+      }
+
       .hidden {
           display: none !important;
       }
@@ -155,6 +250,18 @@
   </div>
 </div>
 
+<div id="endingOverlay" class="hidden">
+  <div id="endingCard">
+    <img id="endingImage" src="" alt="Mission result">
+    <div id="endingInfo">
+      <div id="endingMissionStatus">Mission status: FAILED</div>
+      <div id="endingFuel">Remaining fuel: 0 liters</div>
+      <div id="endingOxygen">Remaining O2: 0 m^3</div>
+    </div>
+    <button id="retryButton">Try Again</button>
+  </div>
+</div>
+
 <canvas id="game"></canvas>
 
 <script>
@@ -167,6 +274,25 @@
     const loadingOverlay = document.getElementById('loadingOverlay');
     const loadingStatus = document.getElementById('loadingStatus');
     const startButton = document.getElementById('startButton');
+
+    const endingOverlay = document.getElementById('endingOverlay');
+    const endingImage = document.getElementById('endingImage');
+    const endingMissionStatus = document.getElementById('endingMissionStatus');
+    const endingFuel = document.getElementById('endingFuel');
+    const endingOxygen = document.getElementById('endingOxygen');
+    const retryButton = document.getElementById('retryButton');
+
+    retryButton.addEventListener('click', () => {
+        sessionStorage.setItem('skipIntro', 'true');
+        location.reload();
+    });
+
+    const skipIntro = sessionStorage.getItem('skipIntro');
+
+    if (skipIntro === 'true') {
+        sessionStorage.removeItem('skipIntro');
+        loadingOverlay.classList.add('hidden');
+    }
 
     function resizeCanvas() {
         canvas.width = window.innerWidth;
@@ -293,6 +419,27 @@
         );
     }
 
+    function showEnding(resultType) {
+        if (resultType === "win") {
+            imagePath = "assets/endings/win.png";
+            missionText = "Mission status: SUCCESS";
+        } else if (resultType === "sun") {
+            imagePath = "assets/endings/sun.png";
+            missionText = "Mission status: FAILED";
+        } else {
+            imagePath = "assets/endings/loose.png";
+            missionText = "Mission status: FAILED";
+        }
+
+        endingImage.src = imagePath;
+        endingMissionStatus.textContent = missionText;
+        endingFuel.textContent = `Remaining fuel: ${ship_fuel.toFixed(0)} liters`;
+        endingOxygen.textContent = `Remaining O2: ${ship_oxygen.toFixed(0)} m^3`;
+
+        loop.stop();
+        endingOverlay.classList.remove('hidden');
+    }
+
     let ship_fuel_text = Text({
         text: '',
         font: '18px Arial',
@@ -375,7 +522,7 @@
             position: earth_position,
             area: screen_size * 0.012,
             mass: 40,
-            rotation_speed: 0.001,
+            rotation_speed: 0.005,
             velocity: Vector(0, 0),
             acceleration: Vector(0, 0),
         },
@@ -556,12 +703,14 @@
                 case 1:
                     target_sprite.x = planets[planet_indices.mars].x;
                     target_sprite.y = planets[planet_indices.mars].y;
-                    target_sprite.rotation -= 0.03;
+                    target_sprite.rotation -= 0.02;
 
                     mission_status.text = `Keep the orbit: ${(10 - on_orbit_count).toFixed(1)}`;
                     if (distance(planets[planet_indices.ship], planets[planet_indices.mars]) < mars_orbit) {
                         on_orbit_count += 0.01;
                         if (on_orbit_count > 10) {
+                            target_sprite.scaleX = planets[planet_indices.earth].scaleX * 4;
+                            target_sprite.scaleY = planets[planet_indices.earth].scaleY * 4;
                             mission_status.text = "Return home";
                             mission_stage += 1;
                         }
@@ -584,7 +733,7 @@
                 case 3:
                     target_sprite.x = planets[planet_indices.earth].x;
                     target_sprite.y = planets[planet_indices.earth].y;
-                    target_sprite.rotation -= 0.03;
+                    target_sprite.rotation -= 0.02;
 
                     mission_status.text = `Keep the orbit: ${(10 - on_orbit_count).toFixed(1)}`;
                     if (distance(planets[planet_indices.ship], planets[planet_indices.earth]) < earth_orbit) {
@@ -592,6 +741,7 @@
                         if (on_orbit_count > 10) {
                             mission_status.text = "You did it!";
                             mission_stage += 1;
+                            showEnding("win");
                         }
                     } else {
                         mission_status.text = "Return home";
@@ -601,6 +751,9 @@
                     break;
             }
 
+            if (ship_fuel <= 0 || ship_oxygen <= 0) {
+                showEnding("loose");
+            }
 
             // Planets positions update
             for (let step = 0; step < 5; step++) {
@@ -877,6 +1030,12 @@
 
         loadingStatus.textContent = "Pre-flight procedures completed.";
         startButton.style.display = 'block';
+
+        if (skipIntro === 'true') {
+            sessionStorage.removeItem('skipIntro');
+            loadingOverlay.classList.add('hidden');
+            loop.start();
+        }
 
         startButton.addEventListener('click', () => {
             loadingOverlay.classList.add('hidden');
