@@ -228,6 +228,19 @@
                   0 5px 12px rgba(0,0,0,0.28);
       }
 
+      #endingTitle {
+          margin-bottom: 16px;
+          font-size: 28px;
+          font-weight: 700;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+
+          color: #f2dfad;
+          text-shadow:
+                  0 1px 0 #2f312c,
+                  0 0 8px rgba(255, 230, 150, 0.2);
+      }
+
       .hidden {
           display: none !important;
       }
@@ -237,7 +250,7 @@
 
 <div id="loadingOverlay">
   <div id="loadingCard">
-    <h1>Mission "Zander"</h1>
+    <h1>Mission <a href="https://en.wikipedia.org/wiki/Friedrich_Zander">"Zander"</a></h1>
     <p>
       You are an astronaut on a mission to reach Mars and return home safely. You have limited fuel and oxygen reserves to complete this journey.
     </p>
@@ -252,6 +265,7 @@
 
 <div id="endingOverlay" class="hidden">
   <div id="endingCard">
+    <div id="endingTitle">Mission Failed</div>
     <img id="endingImage" src="" alt="Mission result">
     <div id="endingInfo">
       <div id="endingMissionStatus">Mission status: FAILED</div>
@@ -281,6 +295,7 @@
     const endingFuel = document.getElementById('endingFuel');
     const endingOxygen = document.getElementById('endingOxygen');
     const retryButton = document.getElementById('retryButton');
+    const endingTitle = document.getElementById('endingTitle');
 
     retryButton.addEventListener('click', () => {
         sessionStorage.setItem('skipIntro', 'true');
@@ -423,12 +438,16 @@
         if (resultType === "win") {
             imagePath = "assets/endings/win.png";
             missionText = "Mission status: SUCCESS";
+            endingTitle.textContent = "YOU DID IT";
         } else if (resultType === "sun") {
             imagePath = "assets/endings/sun.png";
             missionText = "Mission status: FAILED";
+            endingTitle.textContent = "YES. SUN IS HOT";
         } else {
             imagePath = "assets/endings/loose.png";
             missionText = "Mission status: FAILED";
+            if (ship_fuel <= 0) endingTitle.textContent = "FUEL IS EXHAUSTED. YOU ARE DOOMED";
+            else if (ship_oxygen <= 0) endingTitle.textContent = "OXYGEN IS DEPLETED";
         }
 
         endingImage.src = imagePath;
@@ -493,6 +512,8 @@
     let thrust_button;
     let reverse_button;
     let fly_direction_flag = "none";
+    let last_to_earth_distance = 0;
+    let going_away_count = 1000;
 
     let sun_position = Vector(canvas.width / 2, canvas.height / 2);
     let earth_position = polarToScreen(sun_position, screen_size * 0.15, 110);
@@ -751,8 +772,25 @@
                     break;
             }
 
-            if (ship_fuel <= 0 || ship_oxygen <= 0) {
+            if (ship_oxygen <= 0) {
                 showEnding("loose");
+            }
+
+            if (ship_fuel <= 0) {
+                if (mission_stage === 2) {
+                    let to_earth_distance = distance(planets[planet_indices.ship], planets[planet_indices.earth]);
+                    if (to_earth_distance >= last_to_earth_distance) {
+                        going_away_count -= 1;
+                        if (going_away_count < 0) showEnding("loose");
+                    }
+                    last_to_earth_distance = to_earth_distance;
+                } else if (mission_stage < 2) {
+                    showEnding("loose");
+                }
+            }
+
+            if (distance(planets[planet_indices.ship], planets[planet_indices.sun]) < screen_size * 0.04) {
+                showEnding("sun");
             }
 
             // Planets positions update
