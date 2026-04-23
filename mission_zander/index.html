@@ -784,6 +784,8 @@
                         if (going_away_count < 0) showEnding("loose");
                     }
                     last_to_earth_distance = to_earth_distance;
+                } else if (mission_stage === 3) {
+                    going_away_count = 100;
                 } else if (mission_stage < 2) {
                     showEnding("loose");
                 }
