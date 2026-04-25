@@ -34,7 +34,7 @@
       }
 
       #loadingCard {
-          width: min(92vw, 620px);
+          width: min(92vw, 820px);
           padding: 34px 30px 26px;
           border-radius: 14px;
           background:
@@ -241,6 +241,21 @@
                   0 0 8px rgba(255, 230, 150, 0.2);
       }
 
+      #loadingImage {
+          display: block;
+          width: 100%;
+          max-height: 60vh;
+          object-fit: contain;
+          border-radius: 10px;
+          margin-bottom: 18px;
+
+          background: #111;
+
+          box-shadow:
+                  inset 0 2px 0 rgba(255,255,255,0.08),
+                  0 8px 20px rgba(0,0,0,0.4);
+      }
+
       .hidden {
           display: none !important;
       }
@@ -250,15 +265,11 @@
 
 <div id="loadingOverlay">
   <div id="loadingCard">
-    <h1>Mission <a href="https://en.wikipedia.org/wiki/Friedrich_Zander">"Zander"</a></h1>
-    <p>
-      You are an astronaut on a mission to reach Mars and return home safely. You have limited fuel and oxygen reserves to complete this journey.
-    </p>
-    <p>
-      Use the on-screen control panel or the arrow keys on your keyboard to guide your spaceship.
-    </p>
+
+    <img id="loadingImage" src="assets/panel/loading_screen.png" alt="Mission briefing">
 
     <div id="loadingStatus">Spacecraft preparation...</div>
+
     <button id="startButton">Ignition</button>
   </div>
 </div>
@@ -443,6 +454,14 @@
             imagePath = "assets/endings/sun.png";
             missionText = "Mission status: FAILED";
             endingTitle.textContent = "YES. SUN IS HOT";
+        } else if (resultType === "venus") {
+            imagePath = "assets/endings/wrong.png";
+            missionText = "Mission status: FAILED";
+            endingTitle.textContent = "WRONG PLANET! IT IS VENUS";
+        } else if (resultType === "mercury") {
+            imagePath = "assets/endings/wrong.png";
+            missionText = "Mission status: FAILED";
+            endingTitle.textContent = "BRUH. MERCURY. NOT EVEN CLOSE";
         } else {
             imagePath = "assets/endings/loose.png";
             missionText = "Mission status: FAILED";
@@ -513,7 +532,7 @@
     let reverse_button;
     let fly_direction_flag = "none";
     let last_to_earth_distance = 0;
-    let going_away_count = 1000;
+    let going_away_count = 100;
 
     let sun_position = Vector(canvas.width / 2, canvas.height / 2);
     let earth_position = polarToScreen(sun_position, screen_size * 0.15, 110);
@@ -730,8 +749,8 @@
                     if (distance(planets[planet_indices.ship], planets[planet_indices.mars]) < mars_orbit) {
                         on_orbit_count += 0.01;
                         if (on_orbit_count > 10) {
-                            target_sprite.scaleX = planets[planet_indices.earth].scaleX * 4;
-                            target_sprite.scaleY = planets[planet_indices.earth].scaleY * 4;
+                            //target_sprite.scaleX = planets[planet_indices.earth].scaleX * 4;
+                            //target_sprite.scaleY = planets[planet_indices.earth].scaleY * 4;
                             mission_status.text = "Return home";
                             mission_stage += 1;
                         }
@@ -785,7 +804,6 @@
                     }
                     last_to_earth_distance = to_earth_distance;
                 } else if (mission_stage === 3) {
-                    going_away_count = 100;
                 } else if (mission_stage < 2) {
                     showEnding("loose");
                 }
@@ -793,6 +811,12 @@
 
             if (distance(planets[planet_indices.ship], planets[planet_indices.sun]) < screen_size * 0.04) {
                 showEnding("sun");
+            }
+            if (distance(planets[planet_indices.ship], planets[planet_indices.venus]) < screen_size * 0.01) {
+                showEnding("venus");
+            }
+            if (distance(planets[planet_indices.ship], planets[planet_indices.mercury]) < screen_size * 0.004) {
+                showEnding("mercury");
             }
 
             // Planets positions update
@@ -915,8 +939,8 @@
         target_sprite = Sprite({
             x: planets[planet_indices.mars].x,
             y: planets[planet_indices.mars].y,
-            scaleX: planets[planet_indices.mars].scaleX * 4,
-            scaleY: planets[planet_indices.mars].scaleY * 4,
+            scaleX: planets[planet_indices.mars].scaleX * 6,
+            scaleY: planets[planet_indices.mars].scaleY * 6,
             anchor: {x: 0.5, y: 0.5},
             image: imageAssets['./assets/target']
         });
