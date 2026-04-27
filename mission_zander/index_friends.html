@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Planet Simulator</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="modules/kontra.js"></script>
+</head>
+<body>
+
+<div id="loadingOverlay">
+  <div id="loadingCard">
+
+    <h1>Mission <a href="https://en.wikipedia.org/wiki/Friedrich_Zander">"Zander"</a></h1>
+    <p>
+      You are an astronaut on a mission to reach Mars and return home safely. You have limited fuel and oxygen reserves to complete this journey.
+    </p>
+
+    <div id="tutorialGrid">
+
+      <div class="tutorialStep">
+        <div class="tutorialImageBox" style="background-image: url('assets/tutorial/step1.png')">
+          <div class="tutorialTitle">1. Fly to Mars</div>
+        </div>
+        <div class="tutorialDesc">Leave Earth orbit and reach Mars</div>
+      </div>
+
+      <div class="tutorialStep">
+        <div class="tutorialImageBox" style="background-image: url('assets/tutorial/step2.png')">
+          <div class="tutorialTitle">2. Stay in orbit</div>
+        </div>
+        <div class="tutorialDesc">Keep stable orbit around Mars</div>
+      </div>
+
+      <div class="tutorialStep">
+        <div class="tutorialImageBox" style="background-image: url('assets/tutorial/step3.png')">
+          <div class="tutorialTitle">3. Return to Earth</div>
+        </div>
+        <div class="tutorialDesc">Set course back to Earth</div>
+      </div>
+
+      <div class="tutorialStep">
+        <div class="tutorialImageBox" style="background-image: url('assets/tutorial/step4.png')">
+          <div class="tutorialTitle">4. Final orbit</div>
+        </div>
+        <div class="tutorialDesc">Stabilize orbit to complete mission</div>
+      </div>
+
+    </div>
+
+    <div id="loadingStatus">Spacecraft preparation...</div>
+
+    <button id="startButton">Ignition</button>
+  </div>
+</div>
+
+<div id="endingOverlay" class="hidden">
+  <div id="endingCard">
+    <div id="endingTitle">Mission Failed</div>
+    <img id="endingImage" src="" alt="Mission result">
+    <div id="endingInfo">
+      <div id="endingMissionStatus">Mission status: FAILED</div>
+      <div id="endingFuel">Remaining fuel: 0 liters</div>
+      <div id="endingOxygen">Remaining O2: 0 m^3</div>
+    </div>
+    <button id="retryButton">Try Again</button>
+  </div>
+</div>
+
+<canvas id="game"></canvas>
+
+<script src="language_eng.js"></script>
+<script src="game_logic.js"></script>
+
+</body>
+</html>
