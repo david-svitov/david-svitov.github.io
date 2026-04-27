@@ -10,7 +10,12 @@
           width: 100%;
           height: 100%;
           overflow: hidden;
-          background: #111;
+
+          background-image: url("assets/space.jpg");
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+
           font-family: Arial, sans-serif;
       }
 
@@ -18,6 +23,7 @@
           display: block;
           width: 100vw;
           height: 100vh;
+          background: transparent;
       }
 
       /* Loading screen */
@@ -241,19 +247,65 @@
                   0 0 8px rgba(255, 230, 150, 0.2);
       }
 
-      #loadingImage {
-          display: block;
-          width: 100%;
-          max-height: 60vh;
-          object-fit: contain;
+      #tutorialGrid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 18px;
+          margin-bottom: 20px;
+      }
+
+      .tutorialStep {
+          overflow: hidden;
+          border: 1px solid #3a3c35;
           border-radius: 10px;
-          margin-bottom: 18px;
-
-          background: #111;
-
+          background: rgba(0,0,0,0.28);
           box-shadow:
-                  inset 0 2px 0 rgba(255,255,255,0.08),
-                  0 8px 20px rgba(0,0,0,0.4);
+                  inset 0 1px 0 rgba(255,255,255,0.05),
+                  0 6px 14px rgba(0,0,0,0.35);
+      }
+
+      .tutorialImageBox {
+          position: relative;
+          height: 190px;
+          background-size: cover;
+          background-position: center;
+      }
+
+      .tutorialImageBox::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+                  to bottom,
+                  rgba(0,0,0,0.65) 0%,
+                  rgba(0,0,0,0.20) 42%,
+                  rgba(0,0,0,0.05) 100%
+          );
+      }
+
+      .tutorialTitle {
+          position: absolute;
+          left: 12px;
+          right: 12px;
+          top: 10px;
+          z-index: 1;
+
+          font-size: 16px;
+          font-weight: bold;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          color: #f2dfad;
+          text-shadow: 0 2px 6px rgba(0,0,0,0.95);
+      }
+
+      .tutorialDesc {
+          padding: 10px 12px 12px;
+          min-height: 36px;
+
+          font-size: 14px;
+          line-height: 1.3;
+          color: #d8cfaa;
+          background: rgba(0,0,0,0.22);
       }
 
       .hidden {
@@ -266,7 +318,42 @@
 <div id="loadingOverlay">
   <div id="loadingCard">
 
-    <img id="loadingImage" src="assets/panel/loading_screen.png" alt="Mission briefing">
+    <h1>Mission <a href="https://en.wikipedia.org/wiki/Friedrich_Zander">"Zander"</a></h1>
+    <p>
+      You are an astronaut on a mission to reach Mars and return home safely. You have limited fuel and oxygen reserves to complete this journey.
+    </p>
+
+    <div id="tutorialGrid">
+
+      <div class="tutorialStep">
+        <div class="tutorialImageBox" style="background-image: url('assets/tutorial/step1.png')">
+          <div class="tutorialTitle">1. Fly to Mars</div>
+        </div>
+        <div class="tutorialDesc">Leave Earth orbit and reach Mars</div>
+      </div>
+
+      <div class="tutorialStep">
+        <div class="tutorialImageBox" style="background-image: url('assets/tutorial/step2.png')">
+          <div class="tutorialTitle">2. Stay in orbit</div>
+        </div>
+        <div class="tutorialDesc">Keep stable orbit around Mars</div>
+      </div>
+
+      <div class="tutorialStep">
+        <div class="tutorialImageBox" style="background-image: url('assets/tutorial/step3.png')">
+          <div class="tutorialTitle">3. Return to Earth</div>
+        </div>
+        <div class="tutorialDesc">Set course back to Earth</div>
+      </div>
+
+      <div class="tutorialStep">
+        <div class="tutorialImageBox" style="background-image: url('assets/tutorial/step4.png')">
+          <div class="tutorialTitle">4. Final orbit</div>
+        </div>
+        <div class="tutorialDesc">Stabilize orbit to complete mission</div>
+      </div>
+
+    </div>
 
     <div id="loadingStatus">Spacecraft preparation...</div>
 
