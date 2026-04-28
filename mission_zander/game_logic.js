@@ -42,7 +42,7 @@ let dt = 0.01;
 
 let ship_trail = [];
 let max_trail_length = 2000;
-let max_ship_fuel = 500;
+let max_ship_fuel = 600;
 let ship_fuel = max_ship_fuel;
 let max_ship_oxygen = 500;
 let ship_oxygen = max_ship_oxygen;
