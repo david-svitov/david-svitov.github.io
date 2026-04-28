@@ -28,14 +28,15 @@ if (skipIntro === 'true') {
     loadingOverlay.classList.add('hidden');
 }
 
+let screen_size = 0;
+
 function resizeCanvas() {
     canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.height = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+    screen_size = Math.max(canvas.width, canvas.height);
 }
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
-
-let screen_size = Math.max(canvas.width, canvas.height);
 
 let G = 1.0;
 let dt = 0.01;
@@ -625,6 +626,7 @@ image_files.push("./assets/panel/ship.png");
 image_files.push("./assets/target.png");
 
 load(...image_files).then((assets) => {
+    resizeCanvas();
     for (let i = 0; i < planets_properties.length; i++) {
         let image = assets[i];
 
