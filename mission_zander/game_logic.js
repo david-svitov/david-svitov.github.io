@@ -658,8 +658,9 @@ load(...image_files).then((assets) => {
     let panel_height = imageAssets['./assets/panel/panel'].height;
     let panel_width = imageAssets['./assets/panel/panel'].width;
     let interface_scale = screen_size / panel_width * 0.2;
+    let safe_bottom = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--sab')) || 0;
     let panel_x = canvas.width - panel_width * interface_scale / 2;
-    let panel_y = canvas.height - panel_height * interface_scale / 2;
+    let panel_y = canvas.height - safe_bottom - panel_height * interface_scale / 2;
 
     panel_buttons = Sprite({
         x: panel_x,
