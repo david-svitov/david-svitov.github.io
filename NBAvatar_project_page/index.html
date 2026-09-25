@@ -60,7 +60,7 @@
         <div class="column has-text-centered">
           <h1 class="title is-1 publication-title">NBAvatar: Neural Billboards Avatars with Realistic Hand-Face Interaction</h1>
           <div class="is-size-4 publication-authors">
-            <span class="author-block" style="margin-right: 2rem;">
+            <span class="author-block">
               <div class="author-portrait">
                 <img class="img-fluid mb-3" src="static/images/authors/david.png" alt="" >
               </div>
@@ -71,6 +71,18 @@
                 <img class="img-fluid mb-3" src="static/images/authors/mahtab.jpeg" alt="" >
               </div>
               <a href="https://scholar.google.com/citations?user=FIA3fBcAAAAJ">Mahtab Dahaghin</a><sup>1,2</sup>
+            </span>
+            <span class="author-block">
+              <div class="author-portrait">
+                <img class="img-fluid mb-3" src="static/images/authors/pietro.png" alt="" >
+              </div>
+              <a href="https://scholar.google.it/citations?user=lPV9rbkAAAAJ">Pietro Morerio</a><sup>2</sup>
+            </span>
+            <span class="author-block">
+              <div class="author-portrait">
+                <img class="img-fluid mb-3" src="static/images/authors/alessio.jpeg" alt="" >
+              </div>
+              <a href="https://scholar.google.com/citations?user=LUzvbGIAAAAJ">Alessio Del Bue</a><sup>2</sup>
             </span>
           </div>
 
@@ -140,16 +152,19 @@
         <div class="content has-text-justified">
 
           <p>
-            We present <b>NBAvatar</b> - a method for realistic rendering of head avatars handling non-rigid deformations caused by hand-face interaction.
-          We introduce a novel representation for animated avatars by combining the training of oriented planar primitives with neural rendering.
+            We present <b>NBAvatar</b> - a method for realistic rendering of head avatars handling non-rigid
+            deformations caused by hand-face interaction. To this end, we introduce a novel hybrid implicit-explicit
+            representation for animated avatars by combining the training of explicit oriented planar primitives
+            with implicit neural rendering.
           </p>
           <p>
-          Such a combination of explicit and implicit representations enables NBAvatar to handle temporally and pose-consistent geometry, along with
-          fine-grained appearance details provided by the neural rendering technique. In our experiments, we demonstrate that NBAvatar implicitly learns
-          color transformations caused by face-hand interactions and surpasses existing approaches in terms of novel-view and novel-pose rendering quality.
-          Specifically, NBAvatar achieves up to 30% LPIPS reduction under high-resolution megapixel rendering compared to Gaussian-based avatar methods,
-          while also improving PSNR and SSIM, and achieves higher structural similarity compared to the state-of-the-art hand-face interaction method
-          InteractAvatar.
+            Such a combination of representations in the end-to-end pipeline enables NBAvatar to handle temporally
+            and pose-consistent geometry, along with fine-grained appearance details provided by the neural rendering technique.
+            To enable joint optimization of different representations we propose a geometry-aware training scheme that allows our
+            hybrid representation to surpass existing approaches in terms of novel-view and novel-pose rendering quality.
+            Specifically, NBAvatar achieves up to 53% LPIPS reduction compared to Gaussian-based avatar methods, while also
+            improving PSNR and SSIM, and achieves higher structural similarity compared to the state-of-the-art hand-face
+            interaction method InteractAvatar.
           </p>
 
         </div>

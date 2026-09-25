@@ -59,7 +59,7 @@
     <div class="container is-max-desktop">
       <div class="columns is-centered">
         <div class="column has-text-centered">
-          <h1 class="title is-1 publication-title">CloseUpAvatar: High-Fidelity Animatable Full-Body Avatars with Mixture of Multi-Scale Textures</h1>
+          <h1 class="title is-1 publication-title">Frequency-Decomposed Avatar Representation <br> for Varying Camera Distances</h1>
           <div class="is-size-4 publication-authors">
             <span class="author-block">
               <div class="author-portrait">
@@ -154,20 +154,21 @@
         <div class="content has-text-justified">
 
           <p>
-          We present a <b>CloseUpAvatar</b> - a novel approach for articulated human avatar representation dealing with more general camera motions,
-          while preserving rendering quality for close-up views.
+          We present a <b>CloseUpAvatar</b> - a novel approach for articulated human avatar representation supporting a
+          wider range of camera motions, while preserving rendering quality for close-up views.
           </p>
           <p>
-          CloseUpAvatar represents an avatar as a set of textured planes with two sets
-          of learnable textures for low and high-frequency detail. The method automatically switches to high-frequency textures only for cameras
-          positioned close to the avatar's surface and gradually reduces their impact as the camera moves farther away. Such parametrization of the
-          avatar enables CloseUpAvatar to adjust rendering quality based on camera distance ensuring realistic rendering across a wider range of camera
-          orientations than previous approaches.
+            CloseUpAvatar represents an avatar as a set of textured planes with frequency-decomposed learnable textures
+            for low and high-frequency detail. The method automatically switches to high-frequency textures when the camera
+            comes close to the avatar's surface and gradually reduces their impact as the camera moves farther away. Such
+            parametrization of the avatar enables CloseUpAvatar to adjust rendering quality based on camera distance ensuring
+            realistic rendering across a wider range of camera orientations than previous approaches.
           </p>
           <p>
-          We provide experiments using the ActorsHQ dataset with high-resolution input images. CloseUpAvatar
-          demonstrates both qualitative and quantitative improvements over existing methods in rendering from novel wide range camera positions, while
-          maintaining high FPS by limiting the number of required primitives.
+            We provide experiments on the ActorsHQ dataset with high-resolution input images and the THuman4.0 dataset with
+            diverse articulated poses. CloseUpAvatar demonstrates both qualitative and quantitative improvements over existing
+            methods in rendering from novel wide range camera positions, while maintaining high FPS by limiting the number
+            of required primitives.
           </p>
         </div>
       </div>
